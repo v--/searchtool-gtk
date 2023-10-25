@@ -16,7 +16,8 @@ DBUS_INTERFACE = """<node>
     <method name="Pick">
       <arg direction="in" name="name" type="s"/>
       <arg direction="in" name="items" type="as"/>
-      <arg direction="out" name="return" type="s"/>
+      <arg direction="out" name="is_selected" type="b"/>
+      <arg direction="out" name="item" type="s"/>
     </method>
   </interface>
 </node>"""

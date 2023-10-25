@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from gi.repository import Gtk, GLib
+from gi.repository import Gtk
 
 from ..mode import SearchToolMode
 
@@ -32,3 +32,6 @@ class PathMode(SearchToolMode[Path, tuple[int, str]]):
 
     def bump_item(self, item: Path):
         self.recent.add_item(item.as_uri())
+
+    def handle_selection_cancellation(self):
+        pass

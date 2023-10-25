@@ -19,5 +19,16 @@ output="$(gdbus call \
     --method net.ivasilev.SearchToolGTK.Pick \
     "$1" "$items")"
 
-# Convert "('value',)" into "value" and unescape escaped sequences
-printf '%b\n' ${output:2:-3}
+# Split "(true, 'value')" into "true" and "value"
+is_selected="$(echo "${output:1:-1}" | cut --delimiter=',' --fields=1)"
+value="$(echo "${output:0:-2}" | cut --delimiter=',' --fields=2 | tail -c +3)"
+
+case $is_selected in
+  true )
+    printf '%b\n' "$value"
+    ;;
+
+  false )
+    false
+    ;;
+esac

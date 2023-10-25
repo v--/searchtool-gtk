@@ -34,3 +34,6 @@ class SearchToolMode(Protocol[SearchItem, SearchItemSortKeys]):
 
     def activate_item(self, item: SearchItem):
         ...
+
+    def handle_selection_cancellation(self):
+        ...

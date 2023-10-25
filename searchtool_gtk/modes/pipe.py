@@ -45,7 +45,15 @@ class PipeMode(SearchToolMode[str, tuple[()]]):
     def activate_item(self, item: str):
         if self.invocation is not None:
             self.invocation.return_value(
-                GLib.Variant('(s)', [item])
+                GLib.Variant('(bs)', [True, item])
+            )
+
+            self.invocation = None
+
+    def handle_selection_cancellation(self):
+        if self.invocation is not None:
+            self.invocation.return_value(
+                GLib.Variant('(bs)', [False, ''])
             )
 
             self.invocation = None

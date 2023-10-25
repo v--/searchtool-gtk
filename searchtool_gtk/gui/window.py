@@ -48,6 +48,7 @@ class SearchToolWindow(Adw.ApplicationWindow):
 
     def on_minimize(self, action: Gio.Action, parameter: None):
         self.minimize()
+        self.mode.handle_selection_cancellation()
 
     def on_select(self, action: Gio.Action, parameter: None):
         selection = self.content.get_selected()
