@@ -33,10 +33,10 @@ class SearchToolApp(Adw.Application):
         self.modes = modes
         self.windows = {}
 
-        self.set_accels_for_action('win.prev-item', ['Up'])
-        self.set_accels_for_action('win.next-item', ['Down'])
-        self.set_accels_for_action('win.reset_search', ['Escape'])
-        self.set_accels_for_action('win.select', ['Return'])
+        self.set_accels_for_action('win.select-prev', ['Up'])
+        self.set_accels_for_action('win.select-next', ['Down'])
+        self.set_accels_for_action('win.minimize', ['Escape'])
+        self.set_accels_for_action('win.submit', ['Return'])
 
     def run(self, args: list[str] | None):
         exit_status = super().run(args)

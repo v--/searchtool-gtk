@@ -22,35 +22,35 @@ class SearchToolWindow(Adw.ApplicationWindow):
         self.set_content(self.content)
         self.content.set_key_capture_widget(self)
 
-        prev_action = Gio.SimpleAction(name='prev-item')
-        prev_action.connect('activate', self.on_prev)
-        self.add_action(prev_action)
+        select_prev_action = Gio.SimpleAction(name='select-prev')
+        select_prev_action.connect('activate', self.on_select_prev)
+        self.add_action(select_prev_action)
 
-        next_action = Gio.SimpleAction(name='next-item')
-        next_action.connect('activate', self.on_next)
-        self.add_action(next_action)
+        select_next_action = Gio.SimpleAction(name='select-next')
+        select_next_action.connect('activate', self.on_select_next)
+        self.add_action(select_next_action)
 
-        minimize_action = Gio.SimpleAction(name='reset_search')
+        minimize_action = Gio.SimpleAction(name='minimize')
         minimize_action.connect('activate', self.on_minimize)
         self.add_action(minimize_action)
 
-        select_action = Gio.SimpleAction(name='select')
-        select_action.connect('activate', self.on_select)
-        self.add_action(select_action)
+        submit_action = Gio.SimpleAction(name='submit')
+        submit_action.connect('activate', self.on_submit)
+        self.add_action(submit_action)
 
         self.content.refresh_options()
 
-    def on_prev(self, action: Gio.Action, parameter: None):
+    def on_select_prev(self, action: Gio.Action, parameter: None):
         self.content.select_prev()
 
-    def on_next(self, action: Gio.Action, parameter: None):
+    def on_select_next(self, action: Gio.Action, parameter: None):
         self.content.select_next()
 
     def on_minimize(self, action: Gio.Action, parameter: None):
         self.minimize()
         self.mode.handle_selection_cancellation()
 
-    def on_select(self, action: Gio.Action, parameter: None):
+    def on_submit(self, action: Gio.Action, parameter: None):
         selection = self.content.get_selected()
         self.minimize()
 
