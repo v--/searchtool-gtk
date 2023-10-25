@@ -1,0 +1,8 @@
+{
+  "modes": [
+    {
+      "name": "Binary",
+      "class": "searchtool_gtk.modes.BinMode"
+    }
+  ]
+}

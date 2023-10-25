@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+which gdbus jq > /dev/null || exit 1
+
+if test "$#" -ne 1;
+then
+    echo 'Usage: searchtool-gtk-dmenu <mode_name>' > /dev/stderr
+    exit 1
+fi
+
+# We will now construct a JSON array from a newline-separated list of strings coming from STDIN
+# https://stackoverflow.com/a/44477891
+items="$(cat | jq --null-input --raw-input --compact-output '[inputs]')"
+
+output="$(gdbus call \
+    --session \
+    --dest net.ivasilev.SearchToolGTK \
+    --object-path /net/ivasilev/SearchToolGTK \
+    --method net.ivasilev.SearchToolGTK.Pick \
+    "$1" "$items")"
+
+# Convert "('value',)" into "value" and unescape escaped sequences
+printf '%b\n' ${output:2:-3}

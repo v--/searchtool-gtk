@@ -4,12 +4,12 @@ import sys
 
 import xdg.BaseDirectory
 
-from searchtool_gtk import SearchToolValidationError, SearchToolApp, SearchToolConfigItem
+from searchtool_gtk import SearchToolValidationError, SearchToolApp, build_modes_from_file
 
 
 if __name__ == '__main__':
     try:
-        config_items = SearchToolConfigItem.read_from_file(
+        config_items = build_modes_from_file(
             xdg.BaseDirectory.load_first_config('searchtool.json')
         )
     except SearchToolValidationError as err:

@@ -8,12 +8,14 @@ from .path import PathMode
 
 
 class FileMode(PathMode):
-    param_json_schema = {
-        'type': 'array',
-        'items': {
-            'type': 'string'
+    @classmethod
+    def get_param_json_schema(Cls):
+        return {
+            'type': 'array',
+            'items': {
+                'type': 'string'
+            }
         }
-    }
 
     globs: list[str]
 
@@ -25,4 +27,9 @@ class FileMode(PathMode):
         return [Path(path) for pattern in self.globs for path in glob(pattern)]
 
     def activate_item(self, item: Path):
-        subprocess.Popen(['xdg-open', item.as_posix()], start_new_session=True).wait()
+        subprocess.Popen(
+            ['xdg-open', item.as_posix()],
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            start_new_session=True
+        )

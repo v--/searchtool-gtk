@@ -1,34 +1,41 @@
-from __future__ import annotations
-from types import FrameType
-from typing import Union
-import signal
-
-from setproctitle import setproctitle
-
 from gi.repository import Gio, Adw
 
-from ..config import SearchToolConfigItem
-from .content import SearchToolContent
+from ..config import ModeDict
+from ..exceptions import SearchToolValidationError
+from .window import SearchToolWindow
+
+
+DBUS_INTERFACE = """<node>
+  <error name="net.ivasilev.SearchToolGTK.InvalidModeError">
+  </error>
+
+  <interface name="net.ivasilev.SearchToolGTK">
+    <method name="Activate">
+      <arg direction="in" name="name" type="s"/>
+    </method>
+    <method name="Pick">
+      <arg direction="in" name="name" type="s"/>
+      <arg direction="in" name="items" type="as"/>
+      <arg direction="out" name="return" type="s"/>
+    </method>
+  </interface>
+</node>"""
 
 
 class SearchToolApp(Adw.Application):
-    window: Union[Adw.ApplicationWindow, None]
-    toolbar: Adw.ToolbarView  # type: ignore
-    content: SearchToolContent
+    windows: dict[str, SearchToolWindow]
+    modes: ModeDict
 
-    config_list: list[SearchToolConfigItem]
-
-    def __init__(self, config_list: list[SearchToolConfigItem]):
+    def __init__(self, modes: ModeDict):
         super().__init__(application_id='net.ivasilev.SearchToolGTK')
-        setproctitle('searchtool-gtk')
 
-        for config in config_list:
-            signal.signal(signal.SIGRTMIN + config.rt_signal, self.show_window)
+        self.modes = modes
+        self.windows = {}
 
-        self.config_list = config_list
-
-        self.toolbar = Adw.ToolbarView()  # type: ignore
-        self.content = SearchToolContent(self.config_list)
+        self.set_accels_for_action('win.prev-item', ['Up'])
+        self.set_accels_for_action('win.next-item', ['Down'])
+        self.set_accels_for_action('win.reset_search', ['Escape'])
+        self.set_accels_for_action('win.select', ['Return'])
 
     def run(self, args: list[str] | None):
         exit_status = super().run(args)
@@ -37,57 +44,51 @@ class SearchToolApp(Adw.Application):
             raise SystemExit(exit_status)
 
     def do_activate(self):
-        self.window = Adw.ApplicationWindow(application=self, title='SearchTool GTK')
-        self.window.set_content(self.toolbar)
-        self.content.set_key_capture_widget(self.window)
-        self.toolbar.set_content(self.content)
+        self.windows = {
+            name: SearchToolWindow(self, name, mode) for name, mode in self.modes.items()
+        }
 
-        prev_action = Gio.SimpleAction(name='prev-item')
-        prev_action.connect('activate', self.on_prev)
-        self.set_accels_for_action('win.prev-item', ['Up'])
-        self.window.add_action(prev_action)
+        conn = self.get_dbus_connection()
 
-        next_action = Gio.SimpleAction(name='next-item')
-        next_action.connect('activate', self.on_next)
-        self.set_accels_for_action('win.next-item', ['Down'])
-        self.window.add_action(next_action)
+        # Based on https://github.com/rhinstaller/dasbus/blob/be51b94b083bad6fa0716ad6dc97d12f4462f8d4/src/dasbus/server/handler.py#L60
+        for interface in Gio.DBusNodeInfo.new_for_xml(DBUS_INTERFACE).interfaces:
+            conn.register_object(
+                object_path='/net/ivasilev/SearchToolGTK',
+                interface_info=interface,
+                method_call_closure=self.dbus_callback,
+                get_property_closure=None,
+                set_property_closure=None
+            )
 
-        minimize_action = Gio.SimpleAction(name='reset_search')
-        minimize_action.connect('activate', self.on_minimize)
-        self.set_accels_for_action('win.reset_search', ['Escape'])
-        self.window.add_action(minimize_action)
+    def dbus_callback(
+            self,
+            connection: Gio.DBusConnection,
+            sender: str,
+            object_path: str,
+            interface_name: str,
+            method_name: str,
+            params: list,
+            invocation: Gio.DBusMethodInvocation
+        ):
 
-        select_action = Gio.SimpleAction(name='select')
-        select_action.connect('activate', self.on_select)
-        self.set_accels_for_action('win.select', ['Return'])
-        self.window.add_action(select_action)
+        mode_name: str = params[0]
+        window = self.windows.get(mode_name)
 
-        self.window.present()
-        self.content.refresh_options()
+        if window is None:
+            invocation.return_dbus_error('net.ivasilev.SearchToolGTK.InvalidModeError', f'No mode with name {repr(mode_name)} has been configured')
+            return
 
-        self.window.set_visible(False)
+        match method_name:
+            case 'Activate':
+                window.activate()
+                invocation.return_value()
 
-    def on_prev(self, action: Gio.Action, parameter: None):
-        self.content.focus_prev()
+            case 'Pick':
+                items: list[str] = params[1]
 
-    def on_next(self, action: Gio.Action, parameter: None):
-        self.content.focus_next()
+                if hasattr(window.mode, 'handle_dbus_input'):
+                    window.mode.handle_dbus_input(invocation, items)
+                else:
+                    raise SearchToolValidationError('Mode f{mode_name} cannot handle D-Bus input')
 
-    def on_minimize(self, action: Gio.Action, parameter: None):
-        self.content.reset_search()
-
-        if self.window:
-            self.window.set_visible(False)
-
-    def on_select(self, action: Gio.Action, parameter: None):
-        self.content.select()
-        self.content.reset_search()
-
-        if self.window:
-            self.window.set_visible(False)
-
-    def show_window(self, sig_num: int, stack_frame: FrameType | None):
-        if self.window:
-            self.content.set_active(sig_num - signal.SIGRTMIN)
-            self.window.set_visible(True)
-            self.content.refresh_options()
+                window.activate()

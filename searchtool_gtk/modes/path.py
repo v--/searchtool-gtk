@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GLib
 
 from ..mode import SearchToolMode
 
@@ -13,7 +13,7 @@ class PathMode(SearchToolMode[Path, tuple[int, str]]):
         return item.name
 
     def get_secondary_item_label(self, item: Path):
-        return f'<span foreground="gray" size="smaller">{item.parent.as_posix()}</span>'
+        return item.parent.as_posix()
 
     def get_item_sort_keys(self, item: Path):
         timestamp = 0
