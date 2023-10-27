@@ -85,10 +85,10 @@ class SearchToolColumnView(Generic[SearchItem], Gtk.ColumnView):
         if list_model.get_pending() == 0:
             GLib.idle_add(self.select_first)
 
-    def column_setup(self, factory: Gtk.SignalListItemFactory, cell: Gtk.ColumnViewCell):  # type: ignore
+    def column_setup(self, factory: Gtk.SignalListItemFactory, cell: Gtk.ColumnViewCell):  # type: ignore[name-defined]
         cell.set_child(SearchToolEntityWidget())
 
-    def column_bind(self, factory: Gtk.SignalListItemFactory, cell: Gtk.ColumnViewCell):  # type: ignore
+    def column_bind(self, factory: Gtk.SignalListItemFactory, cell: Gtk.ColumnViewCell):  # type: ignore[name-defined]
         item = cell.get_item().si
         widget = cell.get_child()
         widget.main_label.set_label(self.mode.get_main_item_label(item))
@@ -97,9 +97,8 @@ class SearchToolColumnView(Generic[SearchItem], Gtk.ColumnView):
         if secondary_text is None:
             widget.secondary_label.set_visible(False)
         else:
-            widget.secondary_label.set_markup(
-                f'<span foreground="darkgray" size="smaller">{GLib.markup_escape_text(secondary_text)}</span>'
-            )
+            widget.secondary_label.set_visible(True)
+            widget.secondary_label.set_label(secondary_text)
 
     def update_filter_text(self, text: str | None):
         self.filter_model.set_filter(SearchToolFilter(self.mode, text) if text is not None else None)

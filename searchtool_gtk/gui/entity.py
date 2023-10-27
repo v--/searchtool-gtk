@@ -18,5 +18,7 @@ class SearchToolEntityWidget(Gtk.Box):
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.main_label = Gtk.Label(halign=Gtk.Align.START)
         self.append(self.main_label)
+
         self.secondary_label = Gtk.Label(halign=Gtk.Align.START)
+        self.secondary_label.add_css_class('secondary')
         self.append(self.secondary_label)
