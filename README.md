@@ -66,4 +66,4 @@ We use the [XDG config directories](https://specifications.freedesktop.org/based
 
 ## Why mix Python and D?
 
-[`PyGObject`](https://gitlab.gnome.org/GNOME/pygobject/) is official, while [`GtkD`](https://gtkd.org/) lags behind. At the same time, the client binaries cannot be written in Python because Python's of startup slowdown.
+[`PyGObject`](https://gitlab.gnome.org/GNOME/pygobject/) is official, while [`GtkD`](https://gtkd.org/) lags behind. At the same time, the client binaries cannot be written in Python because of Python's startup slowdown.
