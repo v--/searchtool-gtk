@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gio
 
 from ..mode import SearchToolMode
 
@@ -17,12 +17,14 @@ class PathMode(SearchToolMode[Path, tuple[int, str]]):
 
     def get_item_sort_keys(self, item: Path):
         timestamp = 0
-        uri = item.as_uri()
+        gio_file = Gio.File.new_for_path(item.as_posix())
+        uri = gio_file.get_uri()
 
         if self.recent.has_item(uri):
             info = self.recent.lookup_item(uri)
 
             if info is not None:
+
                 timestamp = info.get_modified().to_unix()
 
         return [timestamp, item.as_posix()]
