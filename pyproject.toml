@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "searchtool-gtk"
-version = "1.2.3"
+version = "1.3.0"
 description = "A generic GTK search tool and launcher"
 authors = ["Ianis Vasilev <ianis@ivasilev.net>"]
 license = "Unlicense"

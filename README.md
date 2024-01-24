@@ -46,11 +46,11 @@ The mode for files (and binaries) uses GTK's recent file history to sort files b
 
 An [AUR package](https://aur.archlinux.org/packages/searchtool-gtk) is available.
 
-The two hard prerequisites are a supported version of Python and GTK4.
+The two hard prerequisites are a supported version of Python and GTK4, as well as a C compiler.
 
 The following steps are sufficient:
 
-* Make sure [`poetry`](https://python-poetry.org/) and [`dub`](https://dub.pm/) are installed.
+* Make sure [`poetry`](https://python-poetry.org/) is installed.
 * Clone the repository.
 * Run `make bin/searchtool-gtk-activate`.
 * Run `make bin/searchtool-gtk-dbus`.
@@ -64,6 +64,6 @@ If you are packaging this for some other package manager, consider using PEP-517
 
 We use the [XDG config directories](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) (the defaults should be `/etc/xdg` or `~/.config`) to search for a user configuration file named `searchtool.json`. The format should be clear from [`./searchtool.json.default`](./searchtool.json.default), but one can view the schema in [`./searchtool_gtk/settings.py`](./searchtool_gtk/settings.py) just to be sure.
 
-## Why mix Python and D?
+## Why mix Python and C?
 
-[`PyGObject`](https://gitlab.gnome.org/GNOME/pygobject/) is official, while [`GtkD`](https://gtkd.org/) lags behind. At the same time, the client binaries cannot be written in Python because of Python's startup slowdown.
+Python is much easier to write and maintain. At the same time, the client binaries cannot be written in Python because of Python's startup slowdown.

@@ -1,11 +1,18 @@
-.PHONY: lint
+CC := cc -Wall $(shell pkg-config --cflags --libs gio-2.0)
 
-lint:
+.PHONY: lint-c lint-python lint
+
+lint-c:
+	clang-tidy bin_src/*.c -- $(shell pkg-config --cflags-only-I gio-2.0)
+
+lint-python:
 	poetry run ruff check searchtool_gtk
 	poetry run mypy --package searchtool_gtk
 
-bin/searchtool-gtk-activate: source/activate.d
-	dub build --build=release :activate
+lint-python: lint-c lint-python
 
-bin/searchtool-gtk-dmenu: source/dmenu.d
-	dub build --build=release :dmenu
+bin/searchtool-gtk-activate: bin_src/activate.c
+	$(CC) bin_src/activate.c -o bin/searchtool-gtk-activate
+
+bin/searchtool-gtk-dmenu: bin_src/dmenu.c
+	$(CC) bin_src/dmenu.c -o bin/searchtool-gtk-dmenu
