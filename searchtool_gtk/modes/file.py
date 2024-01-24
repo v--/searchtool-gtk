@@ -24,7 +24,7 @@ class FileMode(PathMode):
         self.recent = Gtk.RecentManager()
 
     def fetch_items(self):
-        return [Path(path) for pattern in self.globs for path in glob(pattern)]
+        return [Path(path) for pattern in self.globs for path in glob(pattern, recursive=True)]
 
     def activate_item(self, item: Path):
         subprocess.Popen(
