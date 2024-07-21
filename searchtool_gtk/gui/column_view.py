@@ -92,6 +92,7 @@ class SearchToolColumnView(Generic[SearchItem], Gtk.ColumnView):
         item = cell.get_item().si
         widget = cell.get_child()
         widget.main_label.set_label(self.mode.get_main_item_label(item))
+        widget.main_label.set_tooltip_text(self.mode.get_main_item_label(item))
         secondary_text = self.mode.get_secondary_item_label(item)
 
         if secondary_text is None:
