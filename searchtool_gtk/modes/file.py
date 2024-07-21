@@ -13,7 +13,13 @@ class FileMode(PathMode):
         return {
             'type': 'array',
             'items': {
-                'type': 'string'
+                'type': 'object',
+                'properties': {
+                    'glob': { 'type': 'string' },
+                    'include_hidden': { 'type': 'boolean' },
+                    'recursive': { 'type': 'boolean' }
+                },
+                'optionalProperties': ['include_hidden', 'recursive']
             }
         }
 
@@ -24,7 +30,15 @@ class FileMode(PathMode):
         self.recent = Gtk.RecentManager()
 
     def fetch_items(self):
-        return [Path(path) for pattern in self.globs for path in glob(pattern, recursive=True)]
+        return [
+            Path(path)
+            for pattern in self.globs
+            for path in glob(
+                pathname=pattern['glob'],
+                recursive=pattern['recursive'] or False,
+                include_hidden=pattern['include_hidden'] or False
+            )
+        ]
 
     def activate_item(self, item: Path):
         subprocess.Popen(
