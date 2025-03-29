@@ -1,3 +1,5 @@
+from typing import Sequence, Mapping
+
 from gi.repository import Gio, Adw
 
 from ..config import ModeDict
@@ -24,7 +26,7 @@ DBUS_INTERFACE = """<node>
 
 
 class SearchToolApp(Adw.Application):
-    windows: dict[str, SearchToolWindow]
+    windows: Mapping[str, SearchToolWindow]
     modes: ModeDict
 
     def __init__(self, modes: ModeDict):
@@ -68,7 +70,7 @@ class SearchToolApp(Adw.Application):
             object_path: str,
             interface_name: str,
             method_name: str,
-            params: list,
+            params: Sequence,
             invocation: Gio.DBusMethodInvocation
         ):
 
@@ -85,7 +87,7 @@ class SearchToolApp(Adw.Application):
                 invocation.return_value()
 
             case 'Pick':
-                items: list[str] = params[1]
+                items: Sequence[str] = params[1]
 
                 if hasattr(window.mode, 'handle_dbus_input'):
                     window.mode.handle_dbus_input(invocation, items)

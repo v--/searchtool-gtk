@@ -1,4 +1,4 @@
-from typing import Generic, Any
+from typing import Generic, Any, Sequence
 
 from gi.repository import GObject, GLib, Gio, Gtk
 
@@ -47,7 +47,7 @@ class SearchToolColumnView(Generic[SearchItem], Gtk.ColumnView):
     selection: Gtk.SingleSelection
 
     title: str
-    cached_items: list[SearchItem]
+    cached_items: Sequence[SearchItem]
     mode: SearchToolMode[SearchItem, Any]
 
     def __init__(self, title: str, mode: SearchToolMode):
@@ -89,8 +89,12 @@ class SearchToolColumnView(Generic[SearchItem], Gtk.ColumnView):
         cell.set_child(SearchToolEntityWidget())
 
     def column_bind(self, factory: Gtk.SignalListItemFactory, cell: Gtk.ColumnViewCell):  # type: ignore[name-defined]
-        item = cell.get_item().si
+        gtk_item = cell.get_item()
+        assert isinstance(gtk_item, SearchToolEntity)
         widget = cell.get_child()
+        assert isinstance(widget, SearchToolEntityWidget)
+
+        item = gtk_item.si
         widget.main_label.set_label(self.mode.get_main_item_label(item))
         widget.main_label.set_tooltip_text(self.mode.get_main_item_label(item))
         secondary_text = self.mode.get_secondary_item_label(item)

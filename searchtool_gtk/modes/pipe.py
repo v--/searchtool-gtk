@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from gi.repository import Gio, GLib
 
 from ..mode import SearchToolMode
@@ -7,7 +9,7 @@ from ..mode import SearchToolMode
 class PipeMode(SearchToolMode[str, tuple[()]]):
     # The invocation and list are populated on demand by calling the handle_dbus_input method
     invocation: Gio.DBusMethodInvocation | None
-    items: list[str]
+    items: Sequence[str]
 
     def __init__(self):
         self.invocation = None
@@ -28,7 +30,7 @@ class PipeMode(SearchToolMode[str, tuple[()]]):
     def fetch_items(self):
         return self.items
 
-    def handle_dbus_input(self, invocation: Gio.DBusMethodInvocation, items: list[str]):
+    def handle_dbus_input(self, invocation: Gio.DBusMethodInvocation, items: Sequence[str]):
         self.invocation = invocation
         self.items = items
 

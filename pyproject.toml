@@ -8,17 +8,14 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.9"
-PyGObject = "^3.46.0"
+PyGObject = "^3.52.3"
 pyxdg = "^0.28"
 pydantic = "^2.11.1"
 
 [tool.poetry.group.dev.dependencies]
-PyGObject-stubs = "^2.9.0"
-mypy = "^1.6.1"
-ruff = "^0.1.1"
-
-[tool.ruff]
-ignore = ["E501"]
+PyGObject-stubs = "^2.13.0"
+mypy = "^1.15.0"
+ruff = "^0.11.2"
 
 [build-system]
 requires = ["poetry-core"]

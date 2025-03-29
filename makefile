@@ -9,7 +9,7 @@ lint-python:
 	poetry run ruff check searchtool_gtk
 	poetry run mypy --package searchtool_gtk
 
-lint-python: lint-c lint-python
+lint: lint-c lint-python
 
 bin/searchtool-gtk-activate: bin_src/activate.c
 	$(CC) bin_src/activate.c -o bin/searchtool-gtk-activate
