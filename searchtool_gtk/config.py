@@ -1,75 +1,61 @@
 from pathlib import Path
+from typing import Any, Mapping, Sequence, Annotated
 import importlib
 import json
-
-import jsonschema
+import pydantic
 
 from .exceptions import SearchToolValidationError
 from .mode import SearchToolMode
+from .pydantic_helpers import StrictPydanticModel
 
 
-CONFIG_SCHEMA = {
-    'type': 'object',
-    'properties': {
-        'modes': {
-            'type': 'array',
-            'elements': {
-                'type': 'object',
-                'properties': {
-                    'name': { 'type': 'string' },
-                    'param': {},
-                    'mode_class': { 'type': 'string' }
-                },
-                'requiredProperties': ['name', 'mode_class'],
-                'additionalProperties': False
-            }
-        }
-    },
-    'requiredProperties': ['modes'],
-    'additionalProperties': False
-}
+class SearchToolModeConfig(StrictPydanticModel):
+    name: str
+    class_fqn: Annotated[str, pydantic.Field(alias='class')]
+    param: Any = None
 
 
-ModeDict = dict[str, SearchToolMode]
+class SearchToolConfig(StrictPydanticModel):
+    modes: Sequence[SearchToolModeConfig]
 
 
-def build_modes_from_file(path: Path) -> dict[str, SearchToolMode]:
+ModeDict = Mapping[str, SearchToolMode]
+
+
+def build_modes_from_file(path: Path) -> ModeDict:
     with open(path, 'r') as file:
         try:
-            config = json.load(file)
+            raw_config = json.load(file)
         except json.JSONDecodeError as err:
             raise SearchToolValidationError(f'Cannot decode {path}: {err}')
 
         try:
-            jsonschema.validate(instance=config, schema=CONFIG_SCHEMA)
-        except jsonschema.exceptions.ValidationError as err:
+            config = SearchToolConfig.model_validate(raw_config, strict=True)
+        except pydantic.ValidationError as err:
             raise SearchToolValidationError(f'Invalid config in {path}: {err}')
 
     result: dict[str, SearchToolMode] = {}
 
-    for mode_config in config['modes']:
-        class_fqn = mode_config['class']
-        module_name, _, class_name = class_fqn.rpartition('.')
-
-        mode_name = mode_config['name']
-        mode_param = mode_config.get('param')
+    for mode_config in config.modes:
+        module_name, _, class_name = mode_config.class_fqn.rpartition('.')
+        mode_param: Any = None
 
         try:
             mode_class = getattr(importlib.import_module(module_name), class_name)
         except (ImportError, AttributeError):
-            raise SearchToolValidationError(f'Cannot import class {class_fqn} required by mode {repr(mode_name)}')
+            raise SearchToolValidationError(f'Cannot import class {mode_config.class_fqn} required by mode {repr(mode_config.name)}')
 
         if not issubclass(mode_class, SearchToolMode):
-            raise SearchToolValidationError(f'The class {class_fqn} required by mode {repr(mode_name)} does not satisfy the <SearchToolMode> protocol')
+            raise SearchToolValidationError(f'The class {mode_config.class_fqn} required by mode {repr(mode_config.name)} does not satisfy the <SearchToolMode> protocol')
 
         try:
-            jsonschema.validate(instance=mode_param, schema=mode_class.get_param_json_schema())
-        except jsonschema.exceptions.ValidationError as err:
-            raise SearchToolValidationError(f'Parameter validation for {repr(mode_name)} failed: {err}')
+            mode_param = mode_class.build_param_class(mode_config.param)
+        except Exception as err:
+            raise SearchToolValidationError(f'Could not initialize parameters for {repr(mode_config.name)}: {err}')
 
-        if mode_name in result:
-            raise SearchToolValidationError(f'More than one mode has name {repr(mode_name)}')
+        if mode_config.name in result:
+            raise SearchToolValidationError(f'More than one mode has name {repr(mode_config.name)}')
 
-        result[mode_name] = mode_class(mode_param)
+        result[mode_config.name] = mode_class(mode_param) if mode_param is not None else mode_class()
 
     return result

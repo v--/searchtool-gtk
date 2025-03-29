@@ -1,6 +1,4 @@
-from typing import Protocol, TypeVar, runtime_checkable
-
-from referencing.jsonschema import Schema
+from typing import Protocol, TypeVar, runtime_checkable, Any
 
 
 SearchItem = TypeVar('SearchItem')
@@ -10,8 +8,8 @@ SearchItemSortKeys = TypeVar('SearchItemSortKeys', covariant=True)
 @runtime_checkable
 class SearchToolMode(Protocol[SearchItem, SearchItemSortKeys]):
     @classmethod
-    def get_param_json_schema(Cls) -> Schema:
-        ...
+    def build_param_class(cls, param: Any) -> Any:
+        pass
 
     def fetch_items(self) -> list[SearchItem]:
         ...

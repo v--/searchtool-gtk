@@ -30,7 +30,7 @@ class PathMode(SearchToolMode[Path, tuple[int, str]]):
         return [timestamp, item.as_posix()]
 
     def match_item(self, item: Path, filter_string: str):
-        return filter_string.casefold() in item.as_posix().casefold()
+        return filter_string in item.as_posix()
 
     def bump_item(self, item: Path):
         self.recent.add_item(item.as_uri())

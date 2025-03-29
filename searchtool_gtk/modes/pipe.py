@@ -9,13 +9,7 @@ class PipeMode(SearchToolMode[str, tuple[()]]):
     invocation: Gio.DBusMethodInvocation | None
     items: list[str]
 
-    @classmethod
-    def get_param_json_schema(Cls):
-        return {
-            'type': 'null',
-        }
-
-    def __init__(self, params: None):
+    def __init__(self):
         self.invocation = None
         self.items = []
 
@@ -29,7 +23,7 @@ class PipeMode(SearchToolMode[str, tuple[()]]):
         return tuple()
 
     def match_item(self, item: str, filter_string: str):
-        return filter_string.casefold() in item.casefold()
+        return filter_string in item
 
     def fetch_items(self):
         return self.items

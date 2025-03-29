@@ -1,3 +1,4 @@
+from typing import Sequence
 from pathlib import Path
 import os
 import subprocess
@@ -8,16 +9,14 @@ from .path import PathMode
 
 
 class BinMode(PathMode):
-    @classmethod
-    def get_param_json_schema(Cls):
-        return {
-            'type': 'null',
-        }
-
-    dirs: list[Path]
+    dirs: Sequence[Path]
     recent: Gtk.RecentManager
 
-    def __init__(self, param: None):
+    @classmethod
+    def build_param_class(cls, param: None) -> None:
+        return None
+
+    def __init__(self):
         self.dirs = [Path(d) for d in os.environ['PATH'].split(':')]
         self.recent = Gtk.RecentManager()
 

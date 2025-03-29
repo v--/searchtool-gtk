@@ -9,15 +9,13 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.9"
 PyGObject = "^3.46.0"
-jsonschema = "^4.19.1"
 pyxdg = "^0.28"
-referencing = "^0.30.2"
+pydantic = "^2.11.1"
 
 [tool.poetry.group.dev.dependencies]
 PyGObject-stubs = "^2.9.0"
 mypy = "^1.6.1"
 ruff = "^0.1.1"
-types-jsonschema = "^4.19.0.3"
 
 [tool.ruff]
 ignore = ["E501"]
