@@ -1,19 +1,5 @@
 #!/usr/bin/env python3
 
-import sys
+from searchtool_gtk import entry_point
 
-import xdg.BaseDirectory
-
-from searchtool_gtk import SearchToolValidationError, SearchToolApp, build_modes_from_file
-
-
-if __name__ == '__main__':
-    try:
-        config_items = build_modes_from_file(
-            xdg.BaseDirectory.load_first_config('searchtool.json')
-        )
-    except SearchToolValidationError as err:
-        raise SystemExit(err)
-
-    app = SearchToolApp(config_items)
-    app.run(sys.argv)
+entry_point()

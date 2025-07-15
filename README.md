@@ -52,11 +52,23 @@ The following steps are sufficient:
 
 * Make sure [`poetry`](https://python-poetry.org/) is installed.
 * Clone the repository.
-* Run `make bin/searchtool-gtk-activate`.
-* Run `make bin/searchtool-gtk-dbus`.
-* Run `poetry install`.
-* Run `pip install [--user] dist/*.whl`
-* Use the files from `bin/`.
+
+* Build and install the Python GUI:
+    ```
+    poetry install
+    poetry build
+    pipx install --include-deps dist/*.whl
+    ```
+
+    Note that `pipx` not only installs the Python module but also creates a `searchtool-gtk-server` executable.
+
+* Build the binaries:
+    ```
+    make bin/searchtool-gtk-activate
+    make bin/searchtool-gtk-dbus
+    ```
+
+    Do whatever you want with these two binaries.
 
 If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=searchtool-gtk).
 
