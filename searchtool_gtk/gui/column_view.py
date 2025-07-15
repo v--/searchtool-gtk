@@ -31,10 +31,10 @@ class SearchToolSorter(Gtk.Sorter):
             return NotImplemented
 
         for a_key, b_key in zip(self.mode.get_item_sort_keys(a.si), self.mode.get_item_sort_keys(b.si)):
-            if a_key > b_key:
+            if a_key < b_key:
                 return Gtk.Ordering.SMALLER
 
-            if a_key < b_key:
+            if a_key > b_key:
                 return Gtk.Ordering.LARGER
 
         return Gtk.Ordering.EQUAL

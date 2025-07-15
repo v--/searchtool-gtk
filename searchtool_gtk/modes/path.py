@@ -24,10 +24,9 @@ class PathMode(SearchToolMode[Path, tuple[int, str]]):
             info = self.recent.lookup_item(uri)
 
             if info is not None:
-
                 timestamp = info.get_modified().to_unix()
 
-        return [timestamp, item.as_posix()]
+        return [-timestamp, item.as_posix()]
 
     def match_item(self, item: Path, filter_string: str):
         return filter_string in item.as_posix()
