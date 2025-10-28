@@ -1,6 +1,6 @@
 [project]
 name = "searchtool-gtk"
-version = "1.6.2"
+version = "2.0.0"
 description = "A generic GTK search tool and launcher"
 license = "Unlicense"
 readme = "README.md"
@@ -37,7 +37,7 @@ build-backend = "poetry.core.masonry.api"
 line-length = 120
 
 [tool.ruff.lint]
-extend-select = ["UP"]
+extend-select = ["UP", "I"]
 
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]

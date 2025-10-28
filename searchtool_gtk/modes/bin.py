@@ -1,19 +1,19 @@
-from collections.abc import Sequence
-from pathlib import Path
 import os
 import subprocess
+from collections.abc import Sequence
+from pathlib import Path
 
 from gi.repository import Gtk
 
 from .path import PathMode
 
 
-class BinMode(PathMode):
+class BinMode(PathMode[None]):
     dirs: Sequence[Path]
     recent: Gtk.RecentManager
 
     @classmethod
-    def build_param_class(cls, param: None) -> None:
+    def build_param_class(cls, param: object) -> None:
         return None
 
     def __init__(self):

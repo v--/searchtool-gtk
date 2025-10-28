@@ -1,11 +1,10 @@
-from collections.abc import Sequence, Mapping
+from collections.abc import Mapping, Sequence
 
-from gi.repository import Gio, Adw
+from gi.repository import Adw, Gio
 
 from ..config import ModeDict
 from ..exceptions import SearchToolValidationError
 from .window import SearchToolWindow
-
 
 DBUS_INTERFACE = """<node>
   <error name="net.ivasilev.SearchToolGTK.InvalidModeError">

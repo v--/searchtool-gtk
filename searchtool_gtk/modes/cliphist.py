@@ -1,18 +1,20 @@
-from .pipe import PipeMode
+from typing import override
+
+from ..collation import StringCollator
 from ..pydantic_helpers import StrictPydanticModel
-from ..matching import mangle
-from typing import Any
+from .pipe import PipeMode
 
 
 class ClipHistModeConfig(StrictPydanticModel):
-    loose_matching: bool = False
+    icu_locale: str | None = None
+    icu_strength: int = 0
 
 
-class ClipHistMode(PipeMode):
+class ClipHistMode(PipeMode[ClipHistModeConfig]):
     config: ClipHistModeConfig
 
     @classmethod
-    def build_param_class(cls, param: Any) -> ClipHistModeConfig:
+    def build_param_class(cls, param: object) -> ClipHistModeConfig:
         if param is None:
             return ClipHistModeConfig()
 
@@ -22,6 +24,11 @@ class ClipHistMode(PipeMode):
         super().__init__()
         self.config = config
 
+    @override
+    def get_collator(self) -> StringCollator:
+        return StringCollator(self.config.icu_locale, self.config.icu_strength)
+
+    @override
     def get_main_item_label(self, item: str):
         try:
             i, text = item.split('\t', maxsplit=1)
@@ -29,9 +36,3 @@ class ClipHistMode(PipeMode):
             return ''
         else:
             return text
-
-    def match_item(self, item: str, filter_string: str):
-        if self.config.loose_matching:
-            return mangle(filter_string) in mangle(item)
-
-        return super().match_item(item, filter_string)

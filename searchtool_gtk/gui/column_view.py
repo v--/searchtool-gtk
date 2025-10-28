@@ -1,47 +1,53 @@
-from typing import Any
 from collections.abc import Sequence
+from typing import Any
 
-from gi.repository import GObject, GLib, Gio, Gtk
+from gi.repository import Gio, GLib, GObject, Gtk
 
-from ..mode import SearchToolMode
+from ..collation import SearchToolCollator
+from ..modes import SearchToolMode
 from .entity import SearchToolEntity, SearchToolEntityWidget
 
 
-class SearchToolFilter(Gtk.Filter):
+class SearchToolFilter[SearchItem = Any](Gtk.Filter):
+    mode: SearchToolMode[SearchItem]
+    collator: SearchToolCollator[SearchItem]
     filter_string: str
-    mode: SearchToolMode
 
-    def __init__(self, mode: SearchToolMode, filter_string: str):
+    def __init__(self, mode: SearchToolMode[SearchItem], filter_string: str):
         super().__init__()
         self.mode = mode
+        self.collator = mode.get_collator()
         self.filter_string = filter_string
 
     def do_match(self, item: GObject.Object | None = None) -> bool:
-        return isinstance(item, SearchToolEntity) and self.mode.match_item(item.si, self.filter_string)
+        return isinstance(item, SearchToolEntity) and self.collator.match_item(item.si, self.filter_string)
 
 
-class SearchToolSorter(Gtk.Sorter):
-    mode: SearchToolMode
+class SearchToolSorter[SearchItem = Any](Gtk.Sorter):
+    mode: SearchToolMode[SearchItem]
+    collator: SearchToolCollator[SearchItem]
 
-    def __init__(self, mode: SearchToolMode):
+    def __init__(self, mode: SearchToolMode[SearchItem]):
         super().__init__()
         self.mode = mode
+        self.collator = mode.get_collator()
 
     def do_compare(self, a: GObject.Object | None = None, b: GObject.Object | None = None) -> Gtk.Ordering:
         if not isinstance(a, SearchToolEntity) or not isinstance(b, SearchToolEntity):
             return NotImplemented
 
-        for a_key, b_key in zip(self.mode.get_item_sort_keys(a.si), self.mode.get_item_sort_keys(b.si)):
-            if a_key < b_key:
-                return Gtk.Ordering.SMALLER
+        cmp = self.collator.compare(a.si, b.si)
 
-            if a_key > b_key:
-                return Gtk.Ordering.LARGER
+        if cmp < 0:
+            return Gtk.Ordering.SMALLER
+
+        if cmp > 0:
+            return Gtk.Ordering.LARGER
 
         return Gtk.Ordering.EQUAL
 
 
-class SearchToolColumnView[SearchItem](Gtk.ColumnView):
+class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
     store: Gio.ListStore
     filter_model: Gtk.FilterListModel
     sort_model: Gtk.SortListModel
@@ -49,7 +55,7 @@ class SearchToolColumnView[SearchItem](Gtk.ColumnView):
 
     title: str
     cached_items: Sequence[SearchItem]
-    mode: SearchToolMode[SearchItem, Any]
+    mode: SearchToolMode[SearchItem]
 
     def __init__(self, title: str, mode: SearchToolMode):
         self.title = title

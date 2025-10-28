@@ -1,16 +1,15 @@
-from collections.abc import Sequence
-from typing import Any
-
-from pathlib import Path
-from glob import glob
 import subprocess
+from collections.abc import Sequence
+from glob import glob
+from pathlib import Path
+from typing import override
 
-
+import icu
 from gi.repository import Gtk
 
-from .path import PathMode
-from ..matching import mangle
+from ..collation import PathCollator, StringCollator
 from ..pydantic_helpers import StrictPydanticModel
+from .path import PathMode
 
 
 class FileModePattern(StrictPydanticModel):
@@ -21,20 +20,29 @@ class FileModePattern(StrictPydanticModel):
 
 class FileModeConfig(StrictPydanticModel):
     patterns: Sequence[FileModePattern]
-    loose_matching: bool = False
+    icu_locale: str | None = None
+    icu_strength: int = icu.Collator.PRIMARY
 
 
 class FileMode(PathMode):
     config: FileModeConfig
 
     @classmethod
-    def build_param_class(cls, param: Any) -> FileModeConfig:
+    def build_param_class(cls, param: object) -> FileModeConfig:
         return FileModeConfig.model_validate(param)
 
     def __init__(self, config: FileModeConfig):
         self.config = config
         self.recent = Gtk.RecentManager()
 
+    @override
+    def get_collator(self) -> PathCollator:
+        return PathCollator(
+            self.recent,
+            StringCollator(self.config.icu_locale, self.config.icu_strength)
+        )
+
+    @override
     def fetch_items(self):
         return [
             Path(path)
@@ -46,12 +54,7 @@ class FileMode(PathMode):
             )
         ]
 
-    def match_item(self, item: Path, filter_string: str):
-        if self.config.loose_matching:
-            return mangle(filter_string) in mangle(item.as_posix())
-
-        return super().match_item(item, filter_string)
-
+    @override
     def activate_item(self, item: Path):
         subprocess.Popen(
             ['xdg-open', item.as_posix()],

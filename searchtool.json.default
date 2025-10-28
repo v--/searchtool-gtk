@@ -3,6 +3,17 @@
     {
       "name": "Binary",
       "class": "searchtool_gtk.modes.BinMode"
+    },
+    {
+      "name": "File",
+      "class": "searchtool_gtk.modes.FileMode",
+      "param": {
+        "icu_locale": "<any locale; this field is optional>",
+        "icu_strength": "<strength of matching strings; lower is looser; this field is also optional>",
+        "patterns": [
+          { "glob": "<glob pattern>", "include_hidden": true, "recursive": true }
+        ]
+      }
     }
   ]
 }

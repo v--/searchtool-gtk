@@ -12,7 +12,7 @@ Similar tools often rely on clunky indexing services or have noticeable startup 
 
 ## Usage
 
-This tool is flexible enough to support a wide variety of use cases. It is configured via a list of "Modes" (which implement the [`SearchToolMode`](./searchtool_gtk/mode.py) protocol), where the mode determines what items to show, how to filter the items and how to activate them. The list of items is fetched whenever the mode is activated, the list is only repopulated if the item list has changed.
+This tool is flexible enough to support a wide variety of use cases. It is configured via a list of "Modes" ([`SearchToolMode`](./searchtool_gtk/modes/base.py)), where the mode determines, with the help of collators ([`SearchToolCollator`](./searchtool_gtk/collation/base.py)), what items to show, how to filter the items and how to activate them. The list of items is fetched whenever the mode is activated, the list is only repopulated if the item list has changed.
 
 Each mode is determined by a name and a fully qualified Python class name, so creating a custom mode does not require any changes to the tool itself. The following mode classes are part of the tool:
 

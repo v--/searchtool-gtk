@@ -1,6 +1,6 @@
-from gi.repository import Adw, Gio, Gtk, GObject
+from gi.repository import Adw, Gio, GObject, Gtk
 
-from ..mode import SearchToolMode
+from ..modes import SearchToolMode
 from .content import SearchToolContent
 
 

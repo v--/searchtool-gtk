@@ -2,8 +2,8 @@ import sys
 
 import xdg.BaseDirectory
 
-from .exceptions import SearchToolValidationError
 from .config import build_modes_from_file
+from .exceptions import SearchToolValidationError
 from .gui import SearchToolApp
 
 
