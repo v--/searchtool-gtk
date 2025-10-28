@@ -1,28 +1,36 @@
-[tool.poetry]
+[project]
 name = "searchtool-gtk"
 version = "1.6.1"
 description = "A generic GTK search tool and launcher"
-authors = ["Ianis Vasilev <ianis@ivasilev.net>"]
 license = "Unlicense"
 readme = "README.md"
+requires-python = ">=3.10,<4.0"
+authors = [
+  {"name"= "Ianis Vasilev", "email"= "<ianis@ivasilev.net>"}
+]
 
-[tool.poetry.dependencies]
-python = "^3.9"
-PyGObject = "^3.52.3"
-pyxdg = "^0.28"
-pydantic = "^2.11.1"
+dependencies = [
+  "PyGObject (>=3.52.3)",
+  "pyxdg (>=0.28)",
+  "pydantic (>=2.11.1)",
+]
 
-[tool.poetry.group.dev.dependencies]
-PyGObject-stubs = "^2.13.0"
-mypy = "^1.17.0"
-ruff = "^0.12.3"
+[project.urls]
+Repository = "https://github.com/v--/searchtool-gtk.git"
+
+[project.scripts]
+searchtool-gtk-server = "searchtool_gtk:entry_point"
+
+[dependency-groups]
+dev = [
+  "PyGObject-stubs (>=2.13.0)",
+  "mypy (>=1.17.0)",
+  "ruff (>=0.12.3)",
+]
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-searchtool-gtk-server = "searchtool_gtk:entry_point"
 
 [tool.ruff]
 target-version = "py311"
