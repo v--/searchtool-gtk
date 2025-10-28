@@ -6,8 +6,8 @@ lint-c:
 	clang-tidy bin_src/*.c -- $(shell pkg-config --cflags-only-I gio-2.0)
 
 lint-python:
-	poetry run ruff check searchtool_gtk
-	poetry run mypy --package searchtool_gtk
+	poetry run ruff check
+	poetry run mypy
 
 lint: lint-c lint-python
 

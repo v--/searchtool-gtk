@@ -39,6 +39,9 @@ line-length = 120
 [tool.ruff.lint.per-file-ignores]
 "__init__.py" = ["F401"]
 
+[tool.mypy]
+packages = ["searchtool_gtk"]
+
 [[tool.mypy.overrides]]
 module = [
   "xdg.*"
