@@ -303,6 +303,17 @@ files = [
 dev = ["PyGObject", "black (>=25.1.0)", "codespell (>=2.4.1)", "isort (>=6.0.1)", "pre-commit", "ruff (>=0.9.10)"]
 
 [[package]]
+name = "pyicu"
+version = "2.15.3"
+description = "Python extension wrapping the ICU C++ API"
+optional = false
+python-versions = "*"
+groups = ["main"]
+files = [
+    {file = "pyicu-2.15.3.tar.gz", hash = "sha256:f32e78e1cb64d0aeb14f027e037a8944861d3114548818a6adf0081ef51aefc3"},
+]
+
+[[package]]
 name = "pyxdg"
 version = "0.28"
 description = "PyXDG contains implementations of freedesktop.org standards in python."
@@ -373,4 +384,4 @@ typing-extensions = ">=4.12.0"
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.12,<4.0"
-content-hash = "aab16527bd685c8ec00db0805a969ec76d9d325dd6cad6fdbb34c997f52c838a"
+content-hash = "95e943c7309917f06f1d4b317ca8621394252c2a1e5b2fb6a66747c5dabfa84d"

@@ -13,6 +13,7 @@ dependencies = [
   "PyGObject (>=3.54.5)",
   "pyxdg (>=0.28)",
   "pydantic (>=2.12.3)",
+  "pyicu (>=2.15.3,<3.0.0)",
 ]
 
 [project.urls]
@@ -46,6 +47,8 @@ packages = ["searchtool_gtk"]
 
 [[tool.mypy.overrides]]
 module = [
+  "gi.*",
+  "icu.*",
   "xdg.*"
 ]
 ignore_missing_imports = true
