@@ -10,9 +10,9 @@ authors = [
 ]
 
 dependencies = [
-  "PyGObject (>=3.52.3)",
+  "PyGObject (>=3.54.5)",
   "pyxdg (>=0.28)",
-  "pydantic (>=2.11.1)",
+  "pydantic (>=2.12.3)",
 ]
 
 [project.urls]
@@ -24,8 +24,8 @@ searchtool-gtk-server = "searchtool_gtk:entry_point"
 [dependency-groups]
 dev = [
   "PyGObject-stubs (>=2.13.0)",
-  "mypy (>=1.17.0)",
-  "ruff (>=0.12.3)",
+  "mypy (>=1.18.2)",
+  "ruff (>=0.14.2)",
 ]
 
 [build-system]
@@ -33,7 +33,7 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.ruff]
-target-version = "py311"
+target-version = "py310"
 line-length = 120
 
 [tool.ruff.lint.per-file-ignores]
