@@ -1,11 +1,7 @@
-from typing import Generic
-
 from gi.repository import GObject, Gtk, Pango
 
-from ..mode import SearchItem
 
-
-class SearchToolEntity(Generic[SearchItem], GObject.Object):
+class SearchToolEntity[SearchItem](GObject.Object):
     si: SearchItem
 
     def __init__(self, si: SearchItem):

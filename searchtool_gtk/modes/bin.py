@@ -1,4 +1,4 @@
-from typing import Sequence
+from collections.abc import Sequence
 from pathlib import Path
 import os
 import subprocess

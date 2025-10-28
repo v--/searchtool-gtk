@@ -1,8 +1,9 @@
-from typing import Generic, Any, Sequence
+from typing import Any
+from collections.abc import Sequence
 
 from gi.repository import GObject, GLib, Gio, Gtk
 
-from ..mode import SearchToolMode, SearchItem
+from ..mode import SearchToolMode
 from .entity import SearchToolEntity, SearchToolEntityWidget
 
 
@@ -40,7 +41,7 @@ class SearchToolSorter(Gtk.Sorter):
         return Gtk.Ordering.EQUAL
 
 
-class SearchToolColumnView(Generic[SearchItem], Gtk.ColumnView):
+class SearchToolColumnView[SearchItem](Gtk.ColumnView):
     store: Gio.ListStore
     filter_model: Gtk.FilterListModel
     sort_model: Gtk.SortListModel

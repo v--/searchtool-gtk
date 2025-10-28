@@ -1,12 +1,8 @@
-from typing import Protocol, TypeVar, runtime_checkable, Any
-
-
-SearchItem = TypeVar('SearchItem')
-SearchItemSortKeys = TypeVar('SearchItemSortKeys', covariant=True)
+from typing import Protocol, runtime_checkable, Any
 
 
 @runtime_checkable
-class SearchToolMode(Protocol[SearchItem, SearchItemSortKeys]):
+class SearchToolMode[SearchItem, SearchItemSortKeys](Protocol):
     @classmethod
     def build_param_class(cls, param: Any) -> Any:
         pass

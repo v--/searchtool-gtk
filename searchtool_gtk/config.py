@@ -1,5 +1,6 @@
 from pathlib import Path
-from typing import Any, Mapping, Sequence, Annotated
+from typing import Any, Annotated
+from collections.abc import Mapping, Sequence
 import importlib
 import json
 import pydantic
@@ -23,7 +24,7 @@ ModeDict = Mapping[str, SearchToolMode]
 
 
 def build_modes_from_file(path: Path) -> ModeDict:
-    with open(path, 'r') as file:
+    with open(path) as file:
         try:
             raw_config = json.load(file)
         except json.JSONDecodeError as err:
