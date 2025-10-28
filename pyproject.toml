@@ -4,7 +4,7 @@ version = "1.6.2"
 description = "A generic GTK search tool and launcher"
 license = "Unlicense"
 readme = "README.md"
-requires-python = ">=3.12,<4.0"
+requires-python = ">=3.13,<4.0"
 authors = [
   { "name" = "Ianis Vasilev", "email" = "ianis@ivasilev.net" }
 ]
