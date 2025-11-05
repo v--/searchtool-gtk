@@ -11,7 +11,7 @@ class PathCollator(SearchToolCollator[pathlib.Path]):
     recent: Gtk.RecentManager
     str_collator: StringCollator
 
-    def __init__(self, recent: Gtk.RecentManager, str_collator: StringCollator | None = None):
+    def __init__(self, recent: Gtk.RecentManager, str_collator: StringCollator | None = None) -> None:
         self.recent = recent
         self.str_collator = str_collator or StringCollator()
 

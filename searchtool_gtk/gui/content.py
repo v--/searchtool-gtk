@@ -2,6 +2,7 @@ from gi.repository import Gtk
 
 from ..modes import SearchToolMode
 from .column_view import SearchToolColumnView
+from .entity import SearchToolEntity
 
 GUI_WIDTH = 800
 GUI_HEIGHT = 400
@@ -18,7 +19,7 @@ class SearchToolContent(Gtk.Box):
     mode_name: str
     mode: SearchToolMode
 
-    def __init__(self, mode_name: str, mode: SearchToolMode):
+    def __init__(self, mode_name: str, mode: SearchToolMode) -> None:
         super().__init__()
 
         self.mode_name = mode_name
@@ -43,25 +44,25 @@ class SearchToolContent(Gtk.Box):
         self.column_view = SearchToolColumnView(mode_name, mode)
         self.scroll_box.set_child(self.column_view)
 
-    def on_input(self, widget: Gtk.Entry):
+    def on_input(self, widget: Gtk.Entry) -> None:
         filter_text = widget.get_property('text')
         self.column_view.update_filter_text(filter_text or None)
 
-    def refresh_options(self):
+    def refresh_options(self) -> None:
         self.column_view.refresh_options()
 
-    def select_prev(self):
+    def select_prev(self) -> None:
         self.column_view.select_prev()
 
-    def select_next(self):
+    def select_next(self) -> None:
         self.column_view.select_next()
 
-    def reset_search(self):
+    def reset_search(self) -> None:
         self.input_widget.set_text('')
         self.column_view.resort()
 
-    def set_key_capture_widget(self, widget: Gtk.Widget | None):
+    def set_key_capture_widget(self, widget: Gtk.Widget | None) -> None:
         self.search_bar.set_key_capture_widget(widget)
 
-    def get_selected(self):
+    def get_selected(self) -> SearchToolEntity | None:
         return self.column_view.get_selected()

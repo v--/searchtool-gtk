@@ -7,7 +7,7 @@ from .exceptions import SearchToolValidationError
 from .gui import SearchToolApp
 
 
-def entry_point():
+def entry_point() -> None:
     try:
         config_items = build_modes_from_file(
             xdg.BaseDirectory.load_first_config('searchtool.json')

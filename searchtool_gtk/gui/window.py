@@ -1,3 +1,5 @@
+from typing import override
+
 from gi.repository import Adw, Gio, GObject, Gtk
 
 from ..modes import SearchToolMode
@@ -8,7 +10,7 @@ class SearchToolWindow(Adw.ApplicationWindow):
     content: SearchToolContent
     mode: SearchToolMode
 
-    def __init__(self, application: Gtk.Application, mode_name: str, mode: SearchToolMode):
+    def __init__(self, application: Gtk.Application, mode_name: str, mode: SearchToolMode) -> None:
         super().__init__(
             application=application,
             title=f'SearchTool GTK: {mode_name}',
@@ -40,17 +42,17 @@ class SearchToolWindow(Adw.ApplicationWindow):
 
         self.content.refresh_options()
 
-    def on_select_prev(self, action: Gio.Action, parameter: None):
+    def on_select_prev(self, action: Gio.Action, parameter: None) -> None:
         self.content.select_prev()
 
-    def on_select_next(self, action: Gio.Action, parameter: None):
+    def on_select_next(self, action: Gio.Action, parameter: None) -> None:
         self.content.select_next()
 
-    def on_minimize(self, action: Gio.Action, parameter: None):
+    def on_minimize(self, action: Gio.Action, parameter: None) -> None:
         self.minimize()
         self.mode.handle_selection_cancellation()
 
-    def on_submit(self, action: Gio.Action, parameter: None):
+    def on_submit(self, action: Gio.Action, parameter: None) -> None:
         selection = self.content.get_selected()
         self.minimize()
 
@@ -60,15 +62,18 @@ class SearchToolWindow(Adw.ApplicationWindow):
 
         self.emit('submit', selection)
 
-    def minimize(self):
+    @override
+    def minimize(self) -> None:
         self.content.reset_search()
         self.set_visible(False)
 
-    def activate(self):
+    @override
+    def activate(self) -> bool:
         self.content.refresh_options()
         self.content.reset_search()
         self.set_visible(True)
         self.present()
+        return True
 
 
 GObject.signal_new(

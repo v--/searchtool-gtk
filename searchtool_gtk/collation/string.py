@@ -20,7 +20,7 @@ def normalize_icu_locale(locale: icu.Locale | str | None = None) -> icu.Locale:
 class StringCollator(SearchToolCollator[str]):
     icu_collator: icu.Collator
 
-    def __init__(self, locale: icu.Locale | str | None = None, strength: int = icu.Collator.PRIMARY):
+    def __init__(self, locale: icu.Locale | str | None = None, strength: int = icu.Collator.PRIMARY) -> None:
         icu_locale = normalize_icu_locale(locale)
         self.icu_collator = icu.Collator.createInstance(icu_locale)
         self.icu_collator.setStrength(strength)

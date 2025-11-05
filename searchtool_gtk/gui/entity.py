@@ -4,13 +4,13 @@ from gi.repository import GObject, Gtk, Pango
 class SearchToolEntity[SearchItem](GObject.Object):
     si: SearchItem
 
-    def __init__(self, si: SearchItem):
+    def __init__(self, si: SearchItem) -> None:
         super().__init__()
         self.si = si
 
 
 class SearchToolEntityWidget(Gtk.Box):
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__(orientation=Gtk.Orientation.VERTICAL)
         self.main_label = Gtk.Label(halign=Gtk.Align.START, ellipsize=Pango.EllipsizeMode.MIDDLE)
         self.append(self.main_label)

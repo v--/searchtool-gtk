@@ -4,6 +4,7 @@ from typing import Any
 from gi.repository import Gio, GLib, GObject, Gtk
 
 from ..collation import SearchToolCollator
+from ..exceptions import SearchToolIntegrityError
 from ..modes import SearchToolMode
 from .entity import SearchToolEntity, SearchToolEntityWidget
 
@@ -13,7 +14,7 @@ class SearchToolFilter[SearchItem = Any](Gtk.Filter):
     collator: SearchToolCollator[SearchItem]
     filter_string: str
 
-    def __init__(self, mode: SearchToolMode[SearchItem], filter_string: str):
+    def __init__(self, mode: SearchToolMode[SearchItem], filter_string: str) -> None:
         super().__init__()
         self.mode = mode
         self.collator = mode.get_collator()
@@ -27,7 +28,7 @@ class SearchToolSorter[SearchItem = Any](Gtk.Sorter):
     mode: SearchToolMode[SearchItem]
     collator: SearchToolCollator[SearchItem]
 
-    def __init__(self, mode: SearchToolMode[SearchItem]):
+    def __init__(self, mode: SearchToolMode[SearchItem]) -> None:
         super().__init__()
         self.mode = mode
         self.collator = mode.get_collator()
@@ -57,7 +58,7 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
     cached_items: Sequence[SearchItem]
     mode: SearchToolMode[SearchItem]
 
-    def __init__(self, title: str, mode: SearchToolMode):
+    def __init__(self, title: str, mode: SearchToolMode) -> None:
         self.title = title
         self.cached_items = []
         self.mode = mode
@@ -88,14 +89,14 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
         self.append_column(column)
 
     # This shouldn't be necessary, but I get weird bugs otherwise like a blank ColumnView
-    def on_items_changed(self, list_model: Gtk.FilterListModel, pos: int, added: int, removed: int):
+    def on_items_changed(self, list_model: Gtk.FilterListModel, pos: int, added: int, removed: int) -> None:
         if list_model.get_pending() == 0:
             GLib.idle_add(self.select_first)
 
-    def column_setup(self, factory: Gtk.SignalListItemFactory, cell: Gtk.ColumnViewCell):  # type: ignore[name-defined]
+    def column_setup(self, factory: Gtk.SignalListItemFactory, cell: Gtk.ColumnViewCell) -> None:
         cell.set_child(SearchToolEntityWidget())
 
-    def column_bind(self, factory: Gtk.SignalListItemFactory, cell: Gtk.ColumnViewCell):  # type: ignore[name-defined]
+    def column_bind(self, factory: Gtk.SignalListItemFactory, cell: Gtk.ColumnViewCell) -> None:
         gtk_item = cell.get_item()
         assert isinstance(gtk_item, SearchToolEntity)
         widget = cell.get_child()
@@ -112,14 +113,14 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
             widget.secondary_label.set_visible(True)
             widget.secondary_label.set_label(secondary_text)
 
-    def update_filter_text(self, text: str | None):
+    def update_filter_text(self, text: str | None) -> None:
         self.filter_model.set_filter(SearchToolFilter(self.mode, text) if text is not None else None)
 
-    def resort(self):
+    def resort(self) -> None:
         # Trigger a resorting
         self.sort_model.set_sorter(SearchToolSorter(self.mode))
 
-    def scroll_to_current(self):
+    def scroll_to_current(self) -> None:
         self.scroll_to(
             pos=self.selection.get_selected() or 0,
             column=None,
@@ -127,12 +128,12 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
             scroll=None
         )
 
-    def select_first(self):
+    def select_first(self) -> None:
         if self.filter_model.get_n_items() > 0:
             self.selection.set_selected(0)
             self.scroll_to_current()
 
-    def select_prev(self):
+    def select_prev(self) -> None:
         pos = self.selection.get_selected()
         n = self.filter_model.get_n_items()
 
@@ -146,7 +147,7 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
 
         self.scroll_to_current()
 
-    def select_next(self):
+    def select_next(self) -> None:
         pos = self.selection.get_selected()
         n = self.filter_model.get_n_items()
 
@@ -160,7 +161,7 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
 
         self.scroll_to_current()
 
-    def refresh_options(self):
+    def refresh_options(self) -> None:
         new_items = self.mode.fetch_items()
 
         if self.cached_items == new_items:
@@ -174,6 +175,15 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
 
         self.scroll_to_current()
 
-    def get_selected(self):
+    def get_selected(self) -> SearchItem | None:
         entity = self.selection.get_selected_item()
-        return None if entity is None else entity.si
+
+        match entity:
+            case SearchToolEntity():
+                return entity.si
+
+            case None:
+                return None
+
+            case _:
+                raise SearchToolIntegrityError(f"Don't know how to handle the selection of {entity!r}.")

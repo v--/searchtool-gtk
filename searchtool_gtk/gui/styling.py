@@ -7,9 +7,9 @@ label.secondary {
 """
 
 
-def apply_styling():
+def apply_styling() -> None:
     style_provider = Gtk.CssProvider()
-    style_provider.load_from_string(CSS)  # type: ignore[attr-defined]
+    style_provider.load_from_string(CSS)
 
     if (display := Gdk.Display.get_default()):
         Gtk.StyleContext.add_provider_for_display(

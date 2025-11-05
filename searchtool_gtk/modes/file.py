@@ -1,7 +1,7 @@
+import pathlib
 import subprocess
 from collections.abc import Sequence
 from glob import glob
-from pathlib import Path
 from typing import override
 
 import icu
@@ -31,7 +31,7 @@ class FileMode(PathMode):
     def build_param_class(cls, param: object) -> FileModeConfig:
         return FileModeConfig.model_validate(param)
 
-    def __init__(self, config: FileModeConfig):
+    def __init__(self, config: FileModeConfig) -> None:
         self.config = config
         self.recent = Gtk.RecentManager()
 
@@ -43,9 +43,9 @@ class FileMode(PathMode):
         )
 
     @override
-    def fetch_items(self):
+    def fetch_items(self) -> Sequence[pathlib.Path]:
         return [
-            Path(path)
+            pathlib.Path(path)
             for pattern in self.config.patterns
             for path in glob(
                 pathname=pattern.glob,
@@ -55,7 +55,7 @@ class FileMode(PathMode):
         ]
 
     @override
-    def activate_item(self, item: Path):
+    def activate_item(self, item: pathlib.Path) -> None:
         subprocess.Popen(
             ['xdg-open', item.as_posix()],
             stdout=subprocess.DEVNULL,

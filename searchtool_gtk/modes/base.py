@@ -1,3 +1,4 @@
+from collections.abc import Sequence
 from typing import Any, Protocol, runtime_checkable
 
 from ..collation import SearchToolCollator
@@ -12,7 +13,7 @@ class SearchToolMode[SearchItem = Any, ParamClass = Any](Protocol):
     def get_collator(cls) -> SearchToolCollator:
         ...
 
-    def fetch_items(self) -> list[SearchItem]:
+    def fetch_items(self) -> Sequence[SearchItem]:
         ...
 
     def get_main_item_label(self, item: SearchItem) -> str:
@@ -22,11 +23,11 @@ class SearchToolMode[SearchItem = Any, ParamClass = Any](Protocol):
         ...
 
     # Record that the item has been selected
-    def bump_item(self, item: SearchItem):
+    def bump_item(self, item: SearchItem) -> None:
         ...
 
-    def activate_item(self, item: SearchItem):
+    def activate_item(self, item: SearchItem) -> None:
         ...
 
-    def handle_selection_cancellation(self):
+    def handle_selection_cancellation(self) -> None:
         ...

@@ -16,17 +16,17 @@ class PathMode[ParamClass = Any](SearchToolMode[Path, ParamClass]):
         return PathCollator(self.recent)
 
     @override
-    def get_main_item_label(self, item: Path):
+    def get_main_item_label(self, item: Path) -> str:
         return item.name
 
     @override
-    def get_secondary_item_label(self, item: Path):
+    def get_secondary_item_label(self, item: Path) -> str:
         return item.parent.as_posix()
 
     @override
-    def bump_item(self, item: Path):
+    def bump_item(self, item: Path) -> None:
         self.recent.add_item(item.as_uri())
 
     @override
-    def handle_selection_cancellation(self):
+    def handle_selection_cancellation(self) -> None:
         pass
