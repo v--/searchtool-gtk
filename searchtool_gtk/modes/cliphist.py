@@ -1,6 +1,7 @@
+from collections.abc import Iterable, Sequence
 from typing import override
 
-from ..collation import StringCollator
+from ..collation import ClipHistCollator, ClipHistItem, StringCollator
 from ..pydantic_helpers import StrictPydanticModel
 from .pipe import PipeMode
 
@@ -10,7 +11,20 @@ class ClipHistModeConfig(StrictPydanticModel):
     icu_strength: int = 0
 
 
-class ClipHistMode(PipeMode[ClipHistModeConfig]):
+def iter_cliphist_items(strings: Sequence[str]) -> Iterable[ClipHistItem]:
+    for string in strings:
+        try:
+            i, text = string.split('\t', maxsplit=1)
+        except ValueError:
+            pass
+
+        try:
+            yield ClipHistItem(int(i), text[:-1]) # The last symbol is a newline
+        except ValueError:
+            pass
+
+
+class ClipHistMode(PipeMode[ClipHistItem, ClipHistModeConfig]):
     config: ClipHistModeConfig
 
     @classmethod
@@ -20,19 +34,24 @@ class ClipHistMode(PipeMode[ClipHistModeConfig]):
 
         return ClipHistModeConfig.model_validate(param)
 
+    @override
+    def digest_dbus_input(self, items: Sequence[str]) -> None:
+        self.items = list(iter_cliphist_items(items))
+
     def __init__(self, config: ClipHistModeConfig) -> None:
         super().__init__()
         self.config = config
 
     @override
-    def get_collator(self) -> StringCollator:
-        return StringCollator(self.config.icu_locale, self.config.icu_strength)
+    def get_collator(self) -> ClipHistCollator:
+        return ClipHistCollator(
+            StringCollator(self.config.icu_locale, self.config.icu_strength)
+        )
 
     @override
-    def get_main_item_label(self, item: str):
-        try:
-            i, text = item.split('\t', maxsplit=1)
-        except ValueError:
-            return ''
-        else:
-            return text
+    def get_main_item_label(self, item: ClipHistItem) -> str:
+        return item.value
+
+    @override
+    def get_secondary_item_label(self, item: ClipHistItem) -> str:
+        return f'id {item.id}'
