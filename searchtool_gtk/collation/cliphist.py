@@ -10,6 +10,9 @@ class ClipHistItem:
     id: int
     value: str
 
+    def __str__(self) -> str:
+        return f'{self.id}\t{self.value}'
+
 
 class ClipHistCollator(SearchToolCollator[ClipHistItem]):
     str_collator: StringCollator
