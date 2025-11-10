@@ -1,6 +1,6 @@
 import pathlib
 import subprocess
-from collections.abc import Sequence
+from collections.abc import Iterable, Sequence
 from glob import glob
 from typing import override
 
@@ -9,6 +9,7 @@ from gi.repository import Gtk
 
 from ..collation import PathCollator, StringCollator
 from ..pydantic_helpers import StrictPydanticModel
+from ..support.iteration import list_accumulator
 from .path import PathMode
 
 
@@ -43,16 +44,15 @@ class FileMode(PathMode):
         )
 
     @override
-    def fetch_items(self) -> Sequence[pathlib.Path]:
-        return [
-            pathlib.Path(path)
-            for pattern in self.config.patterns
+    @list_accumulator
+    def fetch_items(self) -> Iterable[pathlib.Path]:
+        for pattern in self.config.patterns:
             for path in glob(
                 pathname=pattern.glob,
                 recursive=pattern.recursive,
                 include_hidden=pattern.include_hidden
-            )
-        ]
+            ):
+                yield pathlib.Path(path)
 
     @override
     def activate_item(self, item: pathlib.Path) -> None:
