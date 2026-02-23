@@ -12,8 +12,8 @@ authors = [
 dependencies = [
   "pygobject (>=3.54.5)",
   "pyxdg (>=0.28)",
-  "pydantic (>=2.12.3)",
-  "pyicu (>=2.15.3,<3.0.0)",
+  "pydantic (>=2.12.5)",
+  "pyicu (>=2.16.1)",
 ]
 
 [project.urls]
@@ -24,9 +24,9 @@ searchtool-gtk-server = "searchtool_gtk:entry_point"
 
 [dependency-groups]
 dev = [
-  "pygobject-stubs (>=2.13.0)",
-  "mypy (>=1.18.2)",
-  "ruff (>=0.14.2)",
+  "pygobject-stubs (>=2.16.0)",
+  "mypy (>=1.19.1)",
+  "ruff (>=0.15.2)",
 ]
 
 [build-system]
