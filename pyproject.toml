@@ -6,11 +6,11 @@ license = "Unlicense"
 readme = "README.md"
 requires-python = ">=3.13,<4.0"
 authors = [
-  { "name" = "Ianis Vasilev", "email" = "ianis@ivasilev.net" }
+  { name = "Ianis Vasilev", email = "ianis@ivasilev.net" }
 ]
 
 dependencies = [
-  "PyGObject (>=3.54.5)",
+  "pygobject (>=3.54.5)",
   "pyxdg (>=0.28)",
   "pydantic (>=2.12.3)",
   "pyicu (>=2.15.3,<3.0.0)",
@@ -24,7 +24,7 @@ searchtool-gtk-server = "searchtool_gtk:entry_point"
 
 [dependency-groups]
 dev = [
-  "PyGObject-stubs (>=2.13.0)",
+  "pygobject-stubs (>=2.13.0)",
   "mypy (>=1.18.2)",
   "ruff (>=0.14.2)",
 ]
