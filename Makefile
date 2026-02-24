@@ -1,4 +1,4 @@
-CC := cc -Wall $(shell pkg-config --cflags --libs gio-2.0)
+CC := cc -Wall $(shell pkg-config --cflags --libs gio-2.0) $(CFLAGS)
 .DEFAULT_GOAL := build
 
 .PHONY: lint-c lint-python lint build-c build-python build
