@@ -17,11 +17,11 @@ def iter_cliphist_items(strings: Sequence[str]) -> Iterable[ClipHistItem]:
             i, text = string.split('\t', maxsplit=1)
         except ValueError:
             pass
-
-        try:
-            yield ClipHistItem(int(i), text[:-1]) # The last symbol is a newline
-        except ValueError:
-            pass
+        else:
+            try:
+                yield ClipHistItem(int(i), text)
+            except ValueError:
+                pass
 
 
 class ClipHistMode(PipeMode[ClipHistItem, ClipHistModeConfig]):

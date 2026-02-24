@@ -1,5 +1,0 @@
-#!/usr/bin/env python3
-
-from searchtool_gtk import entry_point
-
-entry_point()

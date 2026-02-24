@@ -44,38 +44,37 @@ The mode for files (and binaries) uses GTK's recent file history to sort files b
 
 ## Installation
 
-An [AUR package](https://aur.archlinux.org/packages/searchtool-gtk) is available.
+The easiest way to use this project is via [`uv`](https://docs.astral.sh/uv/). The server can be launched via
+```
+uvx --from git+https://github.com/v--/searchtool-gtk searchtool-gtk
+```
 
-The two hard prerequisites are a supported version of Python and GTK4, as well as a C compiler.
+While `uvx` provides an implicit way to run this program, a proper installation is often more desirable. Furthermore, the package provides binaries `searchtook-gtk-activate` and `searchtook-gtk-dmenu`. An [AUR package](https://aur.archlinux.org/packages/searchtool-gtk) is available for reference.
+
+The hard prerequisites are a supported version of Python and GTK4, as well as a C compiler.
 
 The following steps are sufficient:
 
-* Make sure [`poetry`](https://python-poetry.org/) is installed.
+* Make sure [`uv`](https://docs.astral.sh/uv/) is installed.
 * Clone the repository.
-
-* Build and install the Python GUI:
+* Build and install the Python package via [`pipx`](https://pipx.pypa.io/):
     ```
-    poetry install
-    poetry build
+    uv sync
+    uv build
     pipx install --include-deps dist/*.whl
     ```
 
-    Note that `pipx` not only installs the Python module but also creates a `searchtool-gtk-server` executable.
+    This will install the `searchtool_gtk` Python module and a `searchtool-gtk-server`.
 
-* Build the binaries:
+* (Optionally) build the binaries:
     ```
-    make bin/searchtool-gtk-activate
-    make bin/searchtool-gtk-dbus
+    make build-c
+    install -D -m755 dist/searchtool-gtk-activate "$dest/searchtool-gtk-activate"
+    install -D -m755 dist/searchtool-gtk-dmenu "$dest/searchtool-gtk-dmenu"
     ```
-
-    Do whatever you want with these two binaries.
 
 If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=searchtool-gtk).
 
 ## Configuration
 
 We use the [XDG config directories](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) (the defaults should be `/etc/xdg` or `~/.config`) to search for a user configuration file named `searchtool.json`. The format should be clear from [`./searchtool.json.default`](./searchtool.json.default), but one can view the schema in [`./searchtool_gtk/settings.py`](./searchtool_gtk/settings.py) just to be sure.
-
-## Why mix Python and C?
-
-Python is much easier to write and maintain. At the same time, the client binaries cannot be written in Python because of Python's startup slowdown.

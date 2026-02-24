@@ -24,7 +24,7 @@ void read_items_from_stdin(GVariantBuilder* items_builder) {
       }
     }
 
-    unicode_line = g_utf8_make_valid(line, line_size);
+    unicode_line = g_utf8_make_valid(line, line[line_size - 1] == '\n' ? line_size - 1 : line_size);
     free(line);
 
     GVariant* line_variant = g_variant_new_string(unicode_line);

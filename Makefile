@@ -1,18 +1,26 @@
 CC := cc -Wall $(shell pkg-config --cflags --libs gio-2.0)
+.DEFAULT_GOAL := build
 
-.PHONY: lint-c lint-python lint
+.PHONY: lint-c lint-python lint build-c build-python build
 
 lint-c:
-	clang-tidy bin_src/*.c -- $(shell pkg-config --cflags-only-I gio-2.0)
+	clang-tidy src/client/*.c -- $(shell pkg-config --cflags-only-I gio-2.0)
 
 lint-python:
-	poetry run ruff check
-	poetry run mypy
+	uv run ruff check
+	uv run mypy
 
 lint: lint-c lint-python
 
-bin/searchtool-gtk-activate: bin_src/activate.c
-	$(CC) bin_src/activate.c -o bin/searchtool-gtk-activate
+dist:
+	mkdir dist
 
-bin/searchtool-gtk-dmenu: bin_src/dmenu.c
-	$(CC) bin_src/dmenu.c -o bin/searchtool-gtk-dmenu
+dist/searchtool-gtk-%: src/client/%.c | dist
+	$(CC) src/client/$*.c -o dist/searchtool-gtk-$*
+
+build-c: dist/searchtool-gtk-activate dist/searchtool-gtk-dmenu
+
+build-python:
+	uv build
+
+build: build-c build-python
