@@ -21,6 +21,8 @@ Repository = "https://github.com/v--/searchtool-gtk.git"
 
 [project.scripts]
 searchtool-gtk-server = "searchtool_gtk:entry_point"
+searchtool-gtk-dmenu = "searchtool_gtk:dmenu_client"
+searchtool-gtk-activate = "searchtool_gtk:basic_client"
 
 [dependency-groups]
 dev = [

@@ -48,8 +48,12 @@ The easiest way to use this project is via [`uv`](https://docs.astral.sh/uv/). T
 ```
 uvx --from git+https://github.com/v--/searchtool-gtk searchtool-gtk
 ```
+and, analogously, the client can be launched via
+```
+uvx --from git+https://github.com/v--/searchtool-gtk searchtool-gtk-activate
+```
 
-While `uvx` provides an implicit way to run this program, a proper installation is often more desirable. Furthermore, the package provides binaries `searchtook-gtk-activate` and `searchtook-gtk-dmenu`. An [AUR package](https://aur.archlinux.org/packages/searchtool-gtk) is available for reference.
+While `uvx` provides an implicit way to run this program, a proper installation is often more desirable. Furthermore, the package provides binary counterparts to the Python scripts `searchtook-gtk-activate` and `searchtook-gtk-dmenu`. An [AUR package](https://aur.archlinux.org/packages/searchtool-gtk) is available for reference.
 
 The hard prerequisites are a supported version of Python and GTK4, as well as a C compiler.
 
@@ -64,9 +68,9 @@ The following steps are sufficient:
     pipx install --include-deps dist/*.whl
     ```
 
-    This will install the `searchtool_gtk` Python module and a `searchtool-gtk-server`.
+    This will install the `searchtool_gtk` Python module, a `searchtool-gtk-server` executable, as well as Python implementations of `searchtool-gtk-activate` and `searchtool-gtk-dmenu`.
 
-* (Optionally) build the binaries:
+* Optionally, you can build the binaries that activate immediately rather than with a slowdown:
     ```
     make build-c
     install -D -m755 dist/searchtool-gtk-activate "$dest/searchtool-gtk-activate"
