@@ -77,7 +77,8 @@ The following steps are sufficient:
     install -D -m755 dist/searchtool-gtk-dmenu "$dest/searchtool-gtk-dmenu"
     ```
 
-If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=searchtool-gtk).
+> [!TIP]
+> If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=searchtool-gtk).
 
 ## Configuration
 
