@@ -25,7 +25,7 @@ class FileModeConfig(StrictPydanticModel):
     icu_strength: int = icu.Collator.PRIMARY
 
 
-class FileMode(PathMode):
+class FileMode(PathMode[FileModeConfig]):
     config: FileModeConfig
 
     @classmethod

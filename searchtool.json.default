@@ -2,7 +2,11 @@
   "modes": [
     {
       "name": "Binary",
-      "class": "searchtool_gtk.modes.BinMode"
+      "class": "searchtool_gtk.modes.BinMode",
+      "param": {
+        "stdout": "<optional stream mode; can be INHERIT or DEVNULL>",
+        "stderr": "<ditto>"
+      }
     },
     {
       "name": "File",
