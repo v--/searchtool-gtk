@@ -18,6 +18,7 @@ dependencies = [
 
 [project.urls]
 Repository = "https://github.com/v--/searchtool-gtk.git"
+Changelog = "https://github.com/v--/searchtool-gtk/blob/master/CHANGELOG.md"
 
 [project.scripts]
 searchtool-gtk-server = "searchtool_gtk:entry_point"
