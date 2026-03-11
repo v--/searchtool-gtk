@@ -42,11 +42,11 @@ The mode for files (and binaries) uses GTK's recent file history to sort files b
 
 ## Installation
 
-The easiest way to install the three executables (`searchtool-gtk-{server,activate,dmenu}`) for the current user is via [`uv`](https://docs.astral.sh/uv/):
+An easy way to install the three executables (`searchtool-gtk-{server,activate,dmenu}`) for the current user is via [`uv`](https://docs.astral.sh/uv/):
 
     uv tool install searchtool-gtk --from git+https://github.com/v--/searchtool-gtk
 
-Other tools like `pipx` can also be used - simply run the following from the cloned repository:
+Other tools like [`pipx`](https://pipx.pypa.io/) can also be used - simply run the following from the cloned repository:
 
     uv sync
     uv build --wheel
@@ -62,7 +62,6 @@ For performance reasons, the package also provides native counterparts to the Py
 
 > [!TIP]
 > An [AUR package](https://aur.archlinux.org/packages/searchtool-gtk) is available for reference, as well as a [GitHub Action](./.github/workflows/lint.yaml). If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=searchtool-gtk).
-
 
 ## Configuration
 
