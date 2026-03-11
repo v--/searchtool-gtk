@@ -24,14 +24,12 @@ Each mode is determined by a name and a fully qualified Python class name, so cr
 Launching the tool is done by simply launching `searchtool-gtk-server`.
 
 Given the [default configuration]('./searchtool.json.default'), we can launch the "Binary" mode as follows:
-```
-searchtool-gtk-activate Binary
-```
+
+    searchtool-gtk-activate Binary
 
 The `dmenu` tool can be used as follows (after configuring a `ClipHistMode` mode named "Clipboard"):
-```
-cliphist list | searchtool-gtk-dmenu Clipboard | cliphist decode | wl-copy
-```
+
+    cliphist list | searchtool-gtk-dmenu Clipboard | cliphist decode | wl-copy
 
 Once the popup is launched, usage is obvious:
 
@@ -44,41 +42,27 @@ The mode for files (and binaries) uses GTK's recent file history to sort files b
 
 ## Installation
 
-The easiest way to use this project is via [`uv`](https://docs.astral.sh/uv/). The server can be launched via
-```
-uvx --from git+https://github.com/v--/searchtool-gtk searchtool-gtk
-```
-and, analogously, the client can be launched via
-```
-uvx --from git+https://github.com/v--/searchtool-gtk searchtool-gtk-activate
-```
+The easiest way to install the three executables (`searchtool-gtk-{server,activate,dmenu}`) for the current user is via [`uv`](https://docs.astral.sh/uv/):
 
-While `uvx` provides an implicit way to run this program, a proper installation is often more desirable. Furthermore, the package provides binary counterparts to the Python scripts `searchtook-gtk-activate` and `searchtook-gtk-dmenu`. An [AUR package](https://aur.archlinux.org/packages/searchtool-gtk) is available for reference.
+    uv tool install searchtool-gtk --from git+https://github.com/v--/searchtool-gtk
 
-The hard prerequisites are a supported version of Python and GTK4, as well as a C compiler.
+Other tools like `pipx` can also be used - simply run the following from the cloned repository:
 
-The following steps are sufficient:
-
-* Make sure [`uv`](https://docs.astral.sh/uv/) is installed.
-* Clone the repository.
-* Build and install the Python package via [`pipx`](https://pipx.pypa.io/):
-    ```
     uv sync
     uv build --wheel
     pipx install --include-deps dist/*.whl
-    ```
 
-    This will install the `searchtool_gtk` Python module, a `searchtool-gtk-server` executable, as well as Python implementations of `searchtool-gtk-activate` and `searchtool-gtk-dmenu`.
+The hard prerequisites are a supported version of Python and GTK4.
 
-* Optionally, you can build the binaries that activate immediately rather than with a slowdown:
-    ```
+For performance reasons, the package also provides native counterparts to the Python scripts `searchtook-gtk-activate` and `searchtook-gtk-dmenu`. Using them requires cloning the repository and building from source:
+
     make build-c
     install -D -m755 dist/searchtool-gtk-activate "$dest/searchtool-gtk-activate"
     install -D -m755 dist/searchtool-gtk-dmenu "$dest/searchtool-gtk-dmenu"
-    ```
 
 > [!TIP]
-> If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=searchtool-gtk).
+> An [AUR package](https://aur.archlinux.org/packages/searchtool-gtk) is available for reference, as well as a [GitHub Action](./.github/workflows/lint.yaml). If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=searchtool-gtk).
+
 
 ## Configuration
 
