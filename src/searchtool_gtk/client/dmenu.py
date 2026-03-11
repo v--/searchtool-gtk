@@ -19,7 +19,7 @@ def dmenu_client() -> None:
         interface_name='net.ivasilev.SearchToolGTK',
     )
 
-    input_data = [line.rstrip('\n') for line in sys.stdin]
+    input_data = [line.rstrip(b'\n').decode('utf-8', errors='ignore') for line in sys.stdin.buffer]
     result = proxy.call_sync(
         method_name='Pick',
         parameters=GLib.Variant('(sas)', (mode_name, input_data)),
