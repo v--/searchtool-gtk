@@ -1,3 +1,11 @@
+## v2.2.4 (2026-03-25)
+
+* Fix typos
+
+## v2.2.3 (2026-03-25)
+
+* Relax dependency versions
+
 ## v2.2.2 (2026-03-11)
 
 * Ignore UTF-8 decoding errors in the Pythonic dmenu client
