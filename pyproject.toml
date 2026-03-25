@@ -37,6 +37,11 @@ dev = [
 requires = ["uv_build (>=0.10, <1)"]
 build-backend = "uv_build"
 
+# uv
+[tool.uv]
+resolution = "lowest-direct"
+
+# ruff
 [tool.ruff]
 line-length = 120
 
@@ -49,6 +54,7 @@ extend-select = ["UP", "I", "ANN"]
 [tool.mypy]
 packages = ["searchtool_gtk"]
 
+# mypy
 [[tool.mypy.overrides]]
 module = [
   "gi.*",
