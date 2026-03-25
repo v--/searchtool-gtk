@@ -43,7 +43,7 @@ class PipeMode[SearchItem = Any, ParamClass = Any](SearchToolMode[SearchItem, Pa
         try:
             self.digest_dbus_input(items)
         except NotImplementedError as err:
-            raise SearchToolValidationError(f'Mode f{mode_name} cannot digest D-Bus input') from err
+            raise SearchToolValidationError(f'Mode {mode_name} cannot digest D-Bus input') from err
 
     # Items should be bumped by whatever piped them
     @override

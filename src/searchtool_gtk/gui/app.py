@@ -99,6 +99,6 @@ class SearchToolApp(Adw.Application):
                 if hasattr(window.mode, 'handle_dbus_input'):
                     window.mode.handle_dbus_input(mode_name, invocation, items)
                 else:
-                    raise SearchToolValidationError(f'Mode f{mode_name} cannot handle D-Bus input')
+                    raise SearchToolValidationError(f'Mode {mode_name} cannot handle D-Bus input')
 
                 window.activate()
