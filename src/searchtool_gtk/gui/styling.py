@@ -1,5 +1,6 @@
 from gi.repository import Gdk, Gtk
 
+
 CSS = """
 label.secondary {
   opacity: 0.5;

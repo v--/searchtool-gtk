@@ -4,6 +4,7 @@ from ..modes import SearchToolMode
 from .column_view import SearchToolColumnView
 from .entity import SearchToolEntity
 
+
 GUI_WIDTH = 800
 GUI_HEIGHT = 400
 GUI_SPACING = 20

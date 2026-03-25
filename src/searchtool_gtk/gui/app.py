@@ -7,6 +7,7 @@ from ..config import ModeDict
 from ..exceptions import SearchToolValidationError
 from .window import SearchToolWindow
 
+
 DBUS_INTERFACE = """<node>
   <error name="net.ivasilev.SearchToolGTK.InvalidModeError">
   </error>
