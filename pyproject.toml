@@ -1,6 +1,6 @@
 [project]
 name = "searchtool-gtk"
-version = "2.2.2"
+version = "2.2.3"
 description = "A generic GTK search tool and launcher"
 license = "Unlicense"
 readme = "README.md"
@@ -10,10 +10,10 @@ authors = [
 ]
 
 dependencies = [
-  "pygobject (>=3.54.5)",
+  "pygobject (>=3.54)",
   "pyxdg (>=0.28)",
-  "pydantic (>=2.12.5)",
-  "pyicu (>=2.16.1)",
+  "pydantic (>=2.12)",
+  "pyicu (>=2.16)",
 ]
 
 [project.urls]
@@ -27,13 +27,14 @@ searchtool-gtk-activate = "searchtool_gtk:basic_client"
 
 [dependency-groups]
 dev = [
-  "pygobject-stubs (>=2.16.0)",
-  "mypy (>=1.19.1)",
-  "ruff (>=0.15.2)",
+  "pygobject-stubs (>=2.16)",
+  "mypy (>=1.19)",
+  "ruff (>=0.15)",
 ]
 
 [build-system]
-requires = ["uv_build (>=0.10.5, <0.11.0)"]
+# uv build complains if no upper bound is set, but it updates its minor versions often, so we put a major version just to shut it up
+requires = ["uv_build (>=0.10, <1)"]
 build-backend = "uv_build"
 
 [tool.ruff]
