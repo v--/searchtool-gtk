@@ -1,8 +1,10 @@
+import contextlib
 from collections.abc import Iterable, Sequence
 from typing import override
 
-from ..collation import ClipHistCollator, ClipHistItem, StringCollator
-from ..pydantic_helpers import StrictPydanticModel
+from searchtool_gtk.collation import ClipHistCollator, ClipHistItem, StringCollator
+from searchtool_gtk.pydantic_helpers import StrictPydanticModel
+
 from .pipe import PipeMode
 
 
@@ -18,10 +20,8 @@ def iter_cliphist_items(strings: Sequence[str]) -> Iterable[ClipHistItem]:
         except ValueError:
             pass
         else:
-            try:
+            with contextlib.suppress(ValueError):
                 yield ClipHistItem(int(i), text)
-            except ValueError:
-                pass
 
 
 class ClipHistMode(PipeMode[ClipHistItem, ClipHistModeConfig]):
@@ -45,7 +45,7 @@ class ClipHistMode(PipeMode[ClipHistItem, ClipHistModeConfig]):
     @override
     def get_collator(self) -> ClipHistCollator:
         return ClipHistCollator(
-            StringCollator(self.config.icu_locale, self.config.icu_strength)
+            StringCollator(self.config.icu_locale, self.config.icu_strength),
         )
 
     @override

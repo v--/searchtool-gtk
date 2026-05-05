@@ -3,8 +3,9 @@ from typing import Any, override
 
 from gi.repository import Gio, GLib
 
-from ..collation import SearchToolCollator, StringCollator
-from ..exceptions import SearchToolValidationError
+from searchtool_gtk.collation import SearchToolCollator, StringCollator
+from searchtool_gtk.exceptions import SearchToolValidationError
+
 from .base import SearchToolMode
 
 
@@ -54,7 +55,7 @@ class PipeMode[SearchItem = Any, ParamClass = Any](SearchToolMode[SearchItem, Pa
     def activate_item(self, item: SearchItem) -> None:
         if self.invocation is not None:
             self.invocation.return_value(
-                GLib.Variant('(bs)', [True, str(item)])
+                GLib.Variant('(bs)', [True, str(item)]),
             )
 
             self.invocation = None
@@ -63,7 +64,7 @@ class PipeMode[SearchItem = Any, ParamClass = Any](SearchToolMode[SearchItem, Pa
     def handle_selection_cancellation(self) -> None:
         if self.invocation is not None:
             self.invocation.return_value(
-                GLib.Variant('(bs)', [False, ''])
+                GLib.Variant('(bs)', [False, '']),
             )
 
             self.invocation = None

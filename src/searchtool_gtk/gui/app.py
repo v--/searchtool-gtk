@@ -3,8 +3,9 @@ from typing import override
 
 from gi.repository import Adw, Gio, GLib
 
-from ..config import ModeDict
-from ..exceptions import SearchToolValidationError
+from searchtool_gtk.config import ModeDict
+from searchtool_gtk.exceptions import SearchToolValidationError
+
 from .window import SearchToolWindow
 
 
@@ -68,7 +69,7 @@ class SearchToolApp(Adw.Application):
                 interface_info=interface,
                 method_call_closure=self.dbus_callback,
                 get_property_closure=None,
-                set_property_closure=None
+                set_property_closure=None,
             )
 
     def dbus_callback(
@@ -79,14 +80,14 @@ class SearchToolApp(Adw.Application):
             interface_name: str,
             method_name: str,
             params: GLib.Variant,
-            invocation: Gio.DBusMethodInvocation
+            invocation: Gio.DBusMethodInvocation,
         ) -> None:
 
         mode_name: str = params[0]
         window = self.windows.get(mode_name)
 
         if window is None:
-            invocation.return_dbus_error('net.ivasilev.SearchToolGTK.InvalidModeError', f'No mode with name {repr(mode_name)} has been configured')
+            invocation.return_dbus_error('net.ivasilev.SearchToolGTK.InvalidModeError', f'No mode with name {mode_name!r} has been configured')
             return
 
         match method_name:

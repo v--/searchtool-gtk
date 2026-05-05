@@ -1,6 +1,7 @@
 from gi.repository import Gtk
 
-from ..modes import SearchToolMode
+from searchtool_gtk.modes import SearchToolMode
+
 from .column_view import SearchToolColumnView
 from .entity import SearchToolEntity
 

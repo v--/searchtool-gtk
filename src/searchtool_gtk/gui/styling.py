@@ -16,5 +16,5 @@ def apply_styling() -> None:
         Gtk.StyleContext.add_provider_for_display(
             display,
             style_provider,
-            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION,
         )

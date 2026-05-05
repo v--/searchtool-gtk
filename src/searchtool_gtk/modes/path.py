@@ -3,7 +3,8 @@ from typing import Any, override
 
 from gi.repository import Gtk
 
-from ..collation import PathCollator
+from searchtool_gtk.collation import PathCollator
+
 from .base import SearchToolMode
 
 

@@ -1,3 +1,4 @@
+import contextlib
 import os
 import pathlib
 import subprocess
@@ -7,8 +8,9 @@ from typing import override
 
 from gi.repository import Gtk
 
-from ..pydantic_helpers import StrictPydanticModel
-from ..support.iteration import list_accumulator
+from searchtool_gtk.pydantic_helpers import StrictPydanticModel
+from searchtool_gtk.support.iteration import list_accumulator
+
 from .path import PathMode
 
 
@@ -48,10 +50,8 @@ class BinMode(PathMode[BinModeConfig]):
     @list_accumulator
     def fetch_items(self) -> Iterable[pathlib.Path]:
         for dir_ in self.dirs:
-            try:
+            with contextlib.suppress(FileNotFoundError):
                 yield from dir_.iterdir()
-            except FileNotFoundError:
-                pass
 
     @override
     def activate_item(self, item: pathlib.Path) -> None:
@@ -59,5 +59,5 @@ class BinMode(PathMode[BinModeConfig]):
             item.as_posix(),
             stdout=self.config.stdout.get_descriptor(),
             stderr=self.config.stderr.get_descriptor(),
-            start_new_session=True
+            start_new_session=True,
         )

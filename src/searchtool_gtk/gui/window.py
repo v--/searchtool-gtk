@@ -2,7 +2,8 @@ from typing import override
 
 from gi.repository import Adw, Gio, GObject, Gtk
 
-from ..modes import SearchToolMode
+from searchtool_gtk.modes import SearchToolMode
+
 from .content import SearchToolContent
 
 
@@ -14,7 +15,7 @@ class SearchToolWindow(Adw.ApplicationWindow):
         super().__init__(
             application=application,
             title=f'SearchTool GTK: {mode_name}',
-            accessible_role=Gtk.AccessibleRole.DIALOG
+            accessible_role=Gtk.AccessibleRole.DIALOG,
         )
 
         self.mode_name = mode_name
@@ -81,5 +82,5 @@ GObject.signal_new(
     SearchToolWindow,
     0,
     GObject.TYPE_NONE,
-    [GObject.TYPE_PYOBJECT]
+    [GObject.TYPE_PYOBJECT],
 )

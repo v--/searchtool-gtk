@@ -29,12 +29,12 @@ def build_modes_from_file(path: Path) -> ModeDict:
         try:
             raw_config = json.load(file)
         except json.JSONDecodeError as err:
-            raise SearchToolValidationError(f'Cannot decode {path}: {err}')
+            raise SearchToolValidationError(f'Cannot decode {path}') from err
 
         try:
             config = SearchToolConfig.model_validate(raw_config, strict=True)
         except pydantic.ValidationError as err:
-            raise SearchToolValidationError(f'Invalid config in {path}: {err}')
+            raise SearchToolValidationError(f'Invalid config in {path}') from err
 
     result: dict[str, SearchToolMode] = {}
 
@@ -44,19 +44,19 @@ def build_modes_from_file(path: Path) -> ModeDict:
 
         try:
             mode_class = getattr(importlib.import_module(module_name), class_name)
-        except (ImportError, AttributeError):
-            raise SearchToolValidationError(f'Cannot import class {mode_config.class_fqn} required by mode {repr(mode_config.name)}')
+        except (ImportError, AttributeError) as err:
+            raise SearchToolValidationError(f'Cannot import class {mode_config.class_fqn} required by mode {mode_config.name!r}') from err
 
         if not issubclass(mode_class, SearchToolMode):
-            raise SearchToolValidationError(f'The class {mode_config.class_fqn} required by mode {repr(mode_config.name)} does not satisfy the <SearchToolMode> protocol')
+            raise SearchToolValidationError(f'The class {mode_config.class_fqn} required by mode {mode_config.name!r} does not satisfy the <SearchToolMode> protocol')
 
         try:
             mode_param = mode_class.build_param_class(mode_config.param)
         except Exception as err:
-            raise SearchToolValidationError(f'Could not initialize parameters for {repr(mode_config.name)}: {err}')
+            raise SearchToolValidationError(f'Could not initialize parameters for {mode_config.name!r}') from err
 
         if mode_config.name in result:
-            raise SearchToolValidationError(f'More than one mode has name {repr(mode_config.name)}')
+            raise SearchToolValidationError(f'More than one mode has name {mode_config.name!r}')
 
         result[mode_config.name] = mode_class(mode_param) if mode_param is not None else mode_class()
 

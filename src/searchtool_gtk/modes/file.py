@@ -7,9 +7,10 @@ from typing import override
 import icu
 from gi.repository import Gtk
 
-from ..collation import PathCollator, StringCollator
-from ..pydantic_helpers import StrictPydanticModel
-from ..support.iteration import list_accumulator
+from searchtool_gtk.collation import PathCollator, StringCollator
+from searchtool_gtk.pydantic_helpers import StrictPydanticModel
+from searchtool_gtk.support.iteration import list_accumulator
+
 from .path import PathMode
 
 
@@ -40,7 +41,7 @@ class FileMode(PathMode[FileModeConfig]):
     def get_collator(self) -> PathCollator:
         return PathCollator(
             self.recent,
-            StringCollator(self.config.icu_locale, self.config.icu_strength)
+            StringCollator(self.config.icu_locale, self.config.icu_strength),
         )
 
     @override
@@ -50,7 +51,7 @@ class FileMode(PathMode[FileModeConfig]):
             for path in glob(
                 pathname=pattern.glob,
                 recursive=pattern.recursive,
-                include_hidden=pattern.include_hidden
+                include_hidden=pattern.include_hidden,
             ):
                 yield pathlib.Path(path)
 
@@ -60,5 +61,5 @@ class FileMode(PathMode[FileModeConfig]):
             ['xdg-open', item.as_posix()],
             stdout=subprocess.DEVNULL,
             stderr=subprocess.DEVNULL,
-            start_new_session=True
+            start_new_session=True,
         )

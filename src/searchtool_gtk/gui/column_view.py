@@ -3,9 +3,10 @@ from typing import Any
 
 from gi.repository import Gio, GLib, GObject, Gtk
 
-from ..collation import SearchToolCollator
-from ..exceptions import SearchToolIntegrityError
-from ..modes import SearchToolMode
+from searchtool_gtk.collation import SearchToolCollator
+from searchtool_gtk.exceptions import SearchToolIntegrityError
+from searchtool_gtk.modes import SearchToolMode
+
 from .entity import SearchToolEntity, SearchToolEntityWidget
 
 
@@ -67,12 +68,12 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
         self.sort_model = Gtk.SortListModel(
             model=self.store,
             incremental=True,
-            sorter=SearchToolSorter(mode)
+            sorter=SearchToolSorter(mode),
         )
 
         self.filter_model = Gtk.FilterListModel(
             model=self.sort_model,
-            incremental=True
+            incremental=True,
         )
 
         self.selection = Gtk.SingleSelection(model=self.filter_model)
@@ -125,7 +126,7 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
             pos=self.selection.get_selected() or 0,
             column=None,
             flags=Gtk.ListScrollFlags.NONE,
-            scroll=None
+            scroll=None,
         )
 
     def select_first(self) -> None:

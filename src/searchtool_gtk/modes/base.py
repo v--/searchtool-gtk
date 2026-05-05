@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from typing import Any, Protocol, runtime_checkable
 
-from ..collation import SearchToolCollator
+from searchtool_gtk.collation import SearchToolCollator
 
 
 @runtime_checkable
@@ -10,7 +10,7 @@ class SearchToolMode[SearchItem = Any, ParamClass = Any](Protocol):
     def build_param_class(cls, param: object) -> ParamClass:
         ...
 
-    def get_collator(cls) -> SearchToolCollator:
+    def get_collator(self) -> SearchToolCollator:
         ...
 
     def fetch_items(self) -> Sequence[SearchItem]:

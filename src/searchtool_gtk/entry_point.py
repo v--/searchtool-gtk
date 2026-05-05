@@ -10,10 +10,10 @@ from .gui import SearchToolApp
 def entry_point() -> None:
     try:
         config_items = build_modes_from_file(
-            xdg.BaseDirectory.load_first_config('searchtool.json')
+            xdg.BaseDirectory.load_first_config('searchtool.json'),
         )
     except SearchToolValidationError as err:
-        raise SystemExit(err)
+        raise SystemExit(err) from err
 
     app = SearchToolApp(config_items)
     app.run(sys.argv)
