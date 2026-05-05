@@ -43,28 +43,21 @@ resolution = "lowest-direct"
 
 # ruff
 [tool.ruff]
-line-length = 120
+extend = "./ruff-config/ruff.toml"
 
 [tool.ruff.lint]
-extend-select = ["UP", "I", "ANN"]
+extend-ignore = [
+  "ARG001", # unused-function-argument (GTK callbacks)
+  "ARG002", # unused-method-argument (Overriden GTK methods are not recognized as overriden)
+  "D1",     # undocumented-*
+]
 
-[tool.ruff.lint.isort]
-lines-after-imports = 2
-
-[tool.ruff.lint.flake8-quotes]
-inline-quotes = "single"
-multiline-quotes = "single"
-
-[tool.ruff.lint.per-file-ignores]
-"__init__.py" = ["F401"]
-
+# mypy
 [tool.mypy]
 packages = ["searchtool_gtk"]
 
-# mypy
 [[tool.mypy.overrides]]
 module = [
-  "gi.*",
   "icu.*",
   "xdg.*"
 ]
