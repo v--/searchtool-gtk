@@ -7,101 +7,101 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2.2.5 - 2026-05-05
 
-* Maintenance
+* Maintenance.
 
 ## 2.2.4 - 2026-03-25
 
-* Fix typos
+* Fix typos.
 
 ## 2.2.3 - 2026-03-25
 
-* Relax dependency versions
+* Relax dependency versions.
 
 ## 2.2.2 - 2026-03-11
 
-* Ignore UTF-8 decoding errors in the Pythonic dmenu client
+* Ignore UTF-8 decoding errors in the Pythonic dmenu client.
 
 ## 2.2.1 - 2026-02-27
 
-* Allow configuring stdout and stderr in BinMode
+* Allow configuring stdout and stderr in BinMode.
 
 ## 2.2.0 - 2026-02-24
 
-* Support CFLAGS
-* Migrate to uv from poetry
-* Update dependencies
+* Support CFLAGS.
+* Migrate to uv from poetry.
+* Update dependencies.
 
 ## 2.1.2 - 2025-11-10
 
-* Suppose nonexistent directories in PATH
+* Suppose nonexistent directories in PATH.
 
 ## 2.1.1 - 2025-11-05
 
-* Fix activation of the rewritten ClipHistMode
+* Fix activation of the rewritten ClipHistMode.
 
 ## 2.1.0 - 2025-11-05
 
-* Use proper collation in the ClipHist mode
-* Improve errors and type hints
+* Use proper collation in the ClipHist mode.
+* Improve errors and type hints.
 
 ## 2.0.0 - 2025-10-29
 
-* Reimplement searching and sorting via libICU collators
-* Bump minimal Python version to 3.13
-* Use PEP 695 syntax for generics
+* Reimplement searching and sorting via libICU collators.
+* Bump minimal Python version to 3.13.
+* Use PEP 695 syntax for generics.
 
 ## 1.6.2 - 2025-10-28
 
-* Revise `pyproject.toml` to conform with modern standards (e.g. PEP 508)
-* Update dependencies
+* Revise `pyproject.toml` to conform with modern standards (e.g. PEP 508).
+* Update dependencies.
 
 ## 1.6.1 - 2025-07-15
 
-* Expose executable scripts
+* Expose executable scripts.
 
 ## 1.6.0 - 2025-07-15
 
-* Improve result sorting
-* Update dependencies
+* Improve result sorting.
+* Update dependencies.
 
 ## 1.5.0 - 2025-03-29
 
-* Use Pydantic for config validation and add a loose text matching option
-* Update dependencies
+* Use Pydantic for config validation and add a loose text matching option.
+* Update dependencies.
 
 ## 1.4.0 - 2024-07-21
 
-* Use ellipsizing with tooltips for labels
-* Allow customizing glob matching
+* Use ellipsizing with tooltips for labels.
+* Allow customizing glob matching.
 
 ## 1.3.0 - 2024-01-24
 
-* Rewrite the client binaries in C
+* Rewrite the client binaries in C.
 
 ## 1.2.3 - 2024-01-24
 
-* Allow recursive globs
+* Allow recursive globs.
 
 ## 1.2.2 - 2023-12-13
 
-* Fix recent manager misses by generating proper URIs
+* Fix recent manager misses by generating proper URIs.
 
 ## 1.2.1 - 2023-10-27
 
-* Use GTK CSS for better styling
+* Use GTK CSS for better styling.
 
 ## 1.2.0 - 2023-10-26
 
-* Rewrite the client binaries in D
+* Rewrite the client binaries in D.
 
 ## 1.1.1 - 2023-10-26
 
-* Refine GTK event names
+* Refine GTK event names.
 
 ## 1.1.0 - 2023-10-26
 
-* Handle cancellation of selection through pipes
+* Handle cancellation of selection through pipes.
 
 ## 1.0.0 - 2023-10-25
 
-* Initial release
+* Initial release.
