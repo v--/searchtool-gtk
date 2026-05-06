@@ -241,6 +241,11 @@ wheels = [
 ]
 
 [[package]]
+name = "ruff-config-ivasilev"
+version = "0.15.post7"
+source = { git = "https://github.com/v--/ruff-config-ivasilev.git?rev=v0.15post7#d11a0e339a3a26bcd7e9043048b6421adc180105" }
+
+[[package]]
 name = "searchtool-gtk"
 version = "2.2.5"
 source = { editable = "." }
@@ -256,6 +261,7 @@ dev = [
     { name = "mypy" },
     { name = "pygobject-stubs" },
     { name = "ruff" },
+    { name = "ruff-config-ivasilev" },
 ]
 
 [package.metadata]
@@ -271,6 +277,7 @@ dev = [
     { name = "mypy", specifier = ">=1.19" },
     { name = "pygobject-stubs", specifier = ">=2.16" },
     { name = "ruff", specifier = ">=0.15" },
+    { name = "ruff-config-ivasilev", git = "https://github.com/v--/ruff-config-ivasilev.git?rev=v0.15post7" },
 ]
 
 [[package]]

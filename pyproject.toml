@@ -30,6 +30,7 @@ dev = [
   "pygobject-stubs (>=2.16)",
   "mypy (>=1.19)",
   "ruff (>=0.15)",
+  "ruff-config-ivasilev @ git+https://github.com/v--/ruff-config-ivasilev.git@v0.15post7",
 ]
 
 [build-system]
@@ -43,7 +44,7 @@ resolution = "lowest-direct"
 
 # ruff
 [tool.ruff]
-extend = "./ruff-config/ruff.toml"
+extend = ".venv/share/ruff/ruff.ivasilev.toml"
 
 [tool.ruff.lint]
 extend-ignore = [
