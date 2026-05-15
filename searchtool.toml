@@ -17,9 +17,11 @@ class = "searchtool_gtk.modes.BinMode"
 # [modes.param]
 # patterns = [
 #   "~/Documents/*.pdf",
-#   # The `include_hidden` and `recursive` options are false by default
+#   # For legacy stdlib glob matching, you can set the `include_hidden` and `recursive` options
 #   { glob = "~/Documents/*.pdf", include_hidden = true, recursive = true },
 # ]
+# use_wcmatch = true  # Use wcmatch for glob matching
+# wcmatch_flags = ["NEGATE", "GLOBSTAR", "BRACE", "GLOBTILDE"]  # The default wcmatch flags we use
 # icu_locale =  # Optional ICU locale
 # icu_strength =  # Optional strength of matching strings; lower is looser
 

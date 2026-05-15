@@ -14,6 +14,7 @@ dependencies = [
   "pyxdg (>=0.28)",
   "pydantic (>=2.12)",
   "pyicu (>=2.16)",
+  "wcmatch>=10",
 ]
 
 [project.urls]

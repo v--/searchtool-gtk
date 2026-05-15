@@ -6,14 +6,12 @@ class SearchToolError(SearchToolException):
     pass
 
 
-# Integrity errors cover developer errors
 class SearchToolIntegrityError(SearchToolError):
-    pass
+    """An error class for internal errors."""
 
 
-# Validation errors cover user errors
 class SearchToolValidationError(SearchToolError):
-    pass
+    """An error class for user errors."""
 
 
 class SearchToolWarning(Warning):
