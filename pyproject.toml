@@ -47,7 +47,7 @@ resolution = "lowest-direct"
 extend = ".venv/share/ruff/ruff.ivasilev.toml"
 
 [tool.ruff.lint]
-extend-ignore = [
+ignore = [
   "ARG001", # unused-function-argument (GTK callbacks)
   "ARG002", # unused-method-argument (Overriden GTK methods are not recognized as overriden)
   "D1",     # undocumented-*
