@@ -1,7 +1,8 @@
+import os.path
 import pathlib
 import subprocess
 from collections.abc import Iterable, Sequence
-from glob import glob, iglob
+from glob import iglob
 from typing import override
 
 import icu
@@ -49,9 +50,13 @@ class FileMode(PathMode[FileModeConfig]):
     def fetch_items(self) -> Iterable[pathlib.Path]:
         for pattern in self.config.patterns:
             if isinstance(pattern, FileModePattern):
-                it = iglob(pathname=pattern.glob, recursive=pattern.recursive, include_hidden=pattern.include_hidden)
+                it = iglob(
+                    pathname=os.path.expanduser(pattern.glob),
+                    recursive=pattern.recursive,
+                    include_hidden=pattern.include_hidden,
+                )
             else:
-                it = iglob(pathname=pattern)
+                it = iglob(pathname=os.path.expanduser(pattern))
 
             for path in it:
                 yield pathlib.Path(path)
