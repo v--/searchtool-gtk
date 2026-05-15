@@ -28,7 +28,7 @@ searchtool-gtk-activate = "searchtool_gtk:basic_client"
 [dependency-groups]
 dev = [
   "pygobject-stubs (>=2.16)",
-  "mypy (>=1.19)",
+  "mypy (>=2)",
   "ruff (>=0.15)",
   "ruff-config-ivasilev @ git+https://github.com/v--/ruff-config-ivasilev.git@v0.15post7",
 ]
