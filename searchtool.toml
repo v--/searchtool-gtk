@@ -16,8 +16,9 @@ class = "searchtool_gtk.modes.BinMode"
 
 # [modes.param]
 # patterns = [
-#   # The `include_hidden` and `recursive` options are true by default
-#   { glob = "~/Documents/*.pdf", include_hidden = true },
+#   "~/Documents/*.pdf",
+#   # The `include_hidden` and `recursive` options are false by default
+#   { glob = "~/Documents/*.pdf", include_hidden = true, recursive = true },
 # ]
 # icu_locale =  # Optional ICU locale
 # icu_strength =  # Optional strength of matching strings; lower is looser

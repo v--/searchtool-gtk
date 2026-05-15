@@ -1,7 +1,7 @@
 import pathlib
 import subprocess
 from collections.abc import Iterable, Sequence
-from glob import glob
+from glob import glob, iglob
 from typing import override
 
 import icu
@@ -21,7 +21,7 @@ class FileModePattern(StrictPydanticModel):
 
 
 class FileModeConfig(StrictPydanticModel):
-    patterns: Sequence[FileModePattern]
+    patterns: Sequence[str | FileModePattern]
     icu_locale: str | None = None
     icu_strength: int = icu.Collator.PRIMARY
 
@@ -48,11 +48,12 @@ class FileMode(PathMode[FileModeConfig]):
     @list_accumulator
     def fetch_items(self) -> Iterable[pathlib.Path]:
         for pattern in self.config.patterns:
-            for path in glob(
-                pathname=pattern.glob,
-                recursive=pattern.recursive,
-                include_hidden=pattern.include_hidden,
-            ):
+            if isinstance(pattern, FileModePattern):
+                it = iglob(pathname=pattern.glob, recursive=pattern.recursive, include_hidden=pattern.include_hidden)
+            else:
+                it = iglob(pathname=pattern)
+
+            for path in it:
                 yield pathlib.Path(path)
 
     @override
