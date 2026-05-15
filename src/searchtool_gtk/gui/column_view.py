@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from gi.repository import Gio, GLib, GObject, Gtk
 
@@ -99,9 +99,11 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
 
     def column_bind(self, factory: Gtk.SignalListItemFactory, cell: Gtk.ColumnViewCell) -> None:
         gtk_item = cell.get_item()
-        assert isinstance(gtk_item, SearchToolEntity)
         widget = cell.get_child()
-        assert isinstance(widget, SearchToolEntityWidget)
+
+        if TYPE_CHECKING:
+            assert isinstance(gtk_item, SearchToolEntity)
+            assert isinstance(widget, SearchToolEntityWidget)
 
         item = gtk_item.si
         widget.main_label.set_label(self.mode.get_main_item_label(item))
