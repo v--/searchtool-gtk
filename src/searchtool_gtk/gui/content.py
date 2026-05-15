@@ -61,7 +61,6 @@ class SearchToolContent(Gtk.Box):
 
     def reset_search(self) -> None:
         self.input_widget.set_text('')
-        self.column_view.resort()
 
     def set_key_capture_widget(self, widget: Gtk.Widget | None) -> None:
         self.search_bar.set_key_capture_widget(widget)

@@ -119,10 +119,6 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
     def update_filter_text(self, text: str | None) -> None:
         self.filter_model.set_filter(SearchToolFilter(self.mode, text) if text is not None else None)
 
-    def resort(self) -> None:
-        # Trigger a resorting
-        self.sort_model.set_sorter(SearchToolSorter(self.mode))
-
     def scroll_to_current(self) -> None:
         self.scroll_to(
             pos=self.selection.get_selected() or 0,
