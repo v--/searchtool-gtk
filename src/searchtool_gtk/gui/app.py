@@ -64,7 +64,7 @@ class SearchToolApp(Adw.Application):
 
         # Based on https://github.com/rhinstaller/dasbus/blob/be51b94b083bad6fa0716ad6dc97d12f4462f8d4/src/dasbus/server/handler.py#L60
         for interface in Gio.DBusNodeInfo.new_for_xml(DBUS_INTERFACE).interfaces:
-            conn.register_object(
+            conn.register_object_with_closures2(
                 object_path='/net/ivasilev/SearchToolGTK',
                 interface_info=interface,
                 method_call_closure=self.dbus_callback,
