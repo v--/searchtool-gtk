@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+* Add a TOML configuration option and deprecate JSON configurations.
 * Remove unnecessary re-sorting.
 
 ## 2.2.6 - 2026-05-06

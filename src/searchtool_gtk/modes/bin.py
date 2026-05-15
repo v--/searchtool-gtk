@@ -39,6 +39,9 @@ class BinMode(PathMode[BinModeConfig]):
 
     @classmethod
     def build_param_class(cls, param: object) -> BinModeConfig:
+        if param is None:
+            return BinModeConfig()
+
         return BinModeConfig.model_validate(param)
 
     def __init__(self, config: BinModeConfig) -> None:

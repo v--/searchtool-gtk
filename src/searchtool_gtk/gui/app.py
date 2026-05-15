@@ -3,7 +3,7 @@ from typing import override
 
 from gi.repository import Adw, Gio, GLib
 
-from searchtool_gtk.config import ModeDict
+from searchtool_gtk.config import ModeMapping
 from searchtool_gtk.exceptions import SearchToolValidationError
 
 from .window import SearchToolWindow
@@ -29,9 +29,9 @@ DBUS_INTERFACE = """<node>
 
 class SearchToolApp(Adw.Application):
     windows: Mapping[str, SearchToolWindow]
-    modes: ModeDict
+    modes: ModeMapping
 
-    def __init__(self, modes: ModeDict) -> None:
+    def __init__(self, modes: ModeMapping) -> None:
         super().__init__(application_id='net.ivasilev.SearchToolGTK')
 
         self.modes = modes

@@ -14,3 +14,11 @@ class SearchToolIntegrityError(SearchToolError):
 # Validation errors cover user errors
 class SearchToolValidationError(SearchToolError):
     pass
+
+
+class SearchToolWarning(Warning):
+    pass
+
+
+class SearchToolDeprecationWarning(DeprecationWarning, SearchToolWarning):
+    pass

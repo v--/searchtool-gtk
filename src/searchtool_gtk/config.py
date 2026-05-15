@@ -1,12 +1,16 @@
+
 import importlib
 import json
+import tomllib
+import warnings
 from collections.abc import Mapping, Sequence
-from pathlib import Path
 from typing import Annotated, Any
 
 import pydantic
+import xdg
+import xdg.BaseDirectory
 
-from .exceptions import SearchToolValidationError
+from .exceptions import SearchToolDeprecationWarning, SearchToolValidationError
 from .modes import SearchToolMode
 from .pydantic_helpers import StrictPydanticModel
 
@@ -21,20 +25,48 @@ class SearchToolConfig(StrictPydanticModel):
     modes: Sequence[SearchToolModeConfig]
 
 
-ModeDict = Mapping[str, SearchToolMode]
+ModeMapping = Mapping[str, SearchToolMode]
 
 
-def build_modes_from_file(path: Path) -> ModeDict:
-    with open(path) as file:
+def build_modes_from_config_file() -> ModeMapping:  # noqa: C901
+    toml_config_path = xdg.BaseDirectory.load_first_config('searchtool.toml')
+    json_config_path = xdg.BaseDirectory.load_first_config('searchtool.json')
+    config_path: str | None = None
+    raw_config: Mapping[str, Any] | None = None
+
+    if toml_config_path:
         try:
-            raw_config = json.load(file)
+            with open(toml_config_path, 'rb') as file:
+                raw_config = tomllib.load(file)
+        except FileNotFoundError:
+            pass
+        except tomllib.TOMLDecodeError as err:
+            raise SearchToolValidationError(f'Cannot decode {toml_config_path!r}') from err
+        else:
+            config_path = toml_config_path
+
+    if raw_config is None and json_config_path:
+        try:
+            with open(json_config_path) as file:
+                raw_config = json.load(file)
+        except FileNotFoundError:
+            pass
         except json.JSONDecodeError as err:
-            raise SearchToolValidationError(f'Cannot decode {path}') from err
+            raise SearchToolValidationError(f'Cannot decode {json_config_path!r}') from err
+        else:
+            config_path = json_config_path
+            warnings.warn(
+                SearchToolDeprecationWarning('JSON configurations are deprecated; consider using searchtool.toml'),
+                stacklevel=2,
+            )
 
-        try:
-            config = SearchToolConfig.model_validate(raw_config, strict=True)
-        except pydantic.ValidationError as err:
-            raise SearchToolValidationError(f'Invalid config in {path}') from err
+    if raw_config is None:
+        raise SearchToolValidationError('Cannot find either searchtool.toml or searchtool.json in the XDG paths')
+
+    try:
+        config = SearchToolConfig.model_validate(raw_config, strict=True)
+    except pydantic.ValidationError as err:
+        raise SearchToolValidationError(f'Invalid config in {config_path}') from err
 
     result: dict[str, SearchToolMode] = {}
 

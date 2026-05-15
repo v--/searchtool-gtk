@@ -4,15 +4,18 @@
 
 This is a generic GTK search tool and launcher. It runs as a background server and is activated via D-Bus as well as several client wrappers.
 
-![Screenshot](./screenshot.png)
+## Table of contents
 
-## Motivation
-
-Similar tools often rely on clunky indexing services or have noticeable startup slowdowns. I decided to implement a simple yet efficient solution - an application that is relatively heavyweight when compared to `dmenu`, but instantaneous to start due to it being run as a hidden window. It is more related to the `dmenu` category of tools rather than GNOME or KDE launchers because it is based on plain text items.
+* [Usage](#usage)
+* [Installation](#installation)
+* [Configuration](#motivation)
+* [Motivation](#motivation)
 
 ## Usage
 
-This tool is flexible enough to support a wide variety of use cases. It is configured via a list of "Modes" ([`SearchToolMode`](./searchtool_gtk/modes/base.py)), where the mode determines, with the help of collators ([`SearchToolCollator`](./src/searchtool_gtk/collation/base.py)), what items to show, how to filter the items and how to activate them. The list of items is fetched whenever the mode is activated, the list is only repopulated if the item list has changed.
+![Screenshot](./screenshot.png)
+
+This tool is flexible enough to support a wide variety of use cases. It is configured via a list of "Modes" ([`SearchToolMode`](./src/searchtool_gtk/modes/base.py)), where the mode determines, with the help of collators ([`SearchToolCollator`](./src/searchtool_gtk/collation/base.py)), what items to show, how to filter the items and how to activate them. The list of items is fetched whenever the mode is activated, the list is only repopulated if the item list has changed.
 
 Each mode is determined by a name and a fully qualified Python class name, so creating a custom mode does not require any changes to the tool itself. The following mode classes are part of the tool:
 
@@ -23,7 +26,7 @@ Each mode is determined by a name and a fully qualified Python class name, so cr
 
 Launching the tool is done by simply launching `searchtool-gtk-server`.
 
-Given the [default configuration]('./searchtool.json.default'), we can launch the "Binary" mode as follows:
+Given the [default configuration](./searchtool.toml.example), we can launch the "Binary" mode as follows:
 
     searchtool-gtk-activate Binary
 
@@ -65,4 +68,8 @@ For performance reasons, the package also provides native counterparts to the Py
 
 ## Configuration
 
-We use the [XDG config directories](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) (the defaults should be `/etc/xdg` or `~/.config`) to search for a user configuration file named `searchtool.json`. The format should be clear from [`./searchtool.json.default`](./searchtool.json.default), but one can view the schema in [`./searchtool_gtk/settings.py`](./searchtool_gtk/settings.py) just to be sure.
+We use the [XDG config directories](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) (the defaults should be `/etc/xdg` or `~/.config`) to search for a user configuration file named `searchtool.toml`. The format should be clear from [`searchtool.toml.example`](./searchtool.toml.example).
+
+## Motivation
+
+Similar tools often rely on clunky indexing services or have noticeable startup slowdowns. I decided to implement a simple yet efficient solution - an application that is relatively heavyweight when compared to `dmenu`, but instantaneous to start due to it being run as a hidden window. It is more related to the `dmenu` category of tools rather than GNOME or KDE launchers because it is based on plain text items.

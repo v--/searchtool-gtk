@@ -1,0 +1,28 @@
+# This the the default config
+
+[[modes]]
+name = "Binary"
+class = "searchtool_gtk.modes.BinMode"
+
+# # Optional config
+# [modes.param]
+# stdout =  # Subprocess stream modes; can be "INHERIT" or "DEVNULL"
+# stderr =  # Ditto
+
+# # The File mode has a mandatory "glob" config (see below), so it is optional
+# [[modes]]
+# name = "File"
+# class = "searchtool_gtk.modes.FileMode"
+
+# [modes.param]
+# patterns = [
+#   # The `include_hidden` and `recursive` options are true by default
+#   { glob = "~/Documents/*.pdf", include_hidden = true },
+# ]
+# icu_locale =  # Optional ICU locale
+# icu_strength =  # Optional strength of matching strings; lower is looser
+
+# # The ClipHist mode is also commented out by default, but can easily be re-enabled
+# [[modes]]
+# name = "ClipHist"
+# class = "searchtool_gtk.modes.ClipHist"
