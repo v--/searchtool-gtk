@@ -1,3 +1,4 @@
+import contextlib
 import os.path
 import pathlib
 import subprocess
@@ -96,9 +97,10 @@ class FileMode(PathMode[FileModeConfig]):
 
     @override
     def activate_item(self, item: pathlib.Path) -> None:
-        subprocess.Popen(
-            ['xdg-open', item.as_posix()],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-            start_new_session=True,
-        )
+        with warnings.catch_warnings(category=ResourceWarning, record=True):
+            subprocess.Popen(
+                ['xdg-open', item.as_posix()],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL,
+                start_new_session=True,
+            )

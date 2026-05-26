@@ -5,6 +5,7 @@ import subprocess
 from collections.abc import Iterable, Sequence
 from enum import StrEnum
 from typing import override
+import warnings
 
 from gi.repository import Gtk
 
@@ -58,9 +59,10 @@ class BinMode(PathMode[BinModeConfig]):
 
     @override
     def activate_item(self, item: pathlib.Path) -> None:
-        subprocess.Popen(
-            item.as_posix(),
-            stdout=self.config.stdout.get_descriptor(),
-            stderr=self.config.stderr.get_descriptor(),
-            start_new_session=True,
-        )
+        with warnings.catch_warnings(category=ResourceWarning, record=True):
+            subprocess.Popen(
+                item.as_posix(),
+                stdout=self.config.stdout.get_descriptor(),
+                stderr=self.config.stderr.get_descriptor(),
+                start_new_session=True,
+            )
