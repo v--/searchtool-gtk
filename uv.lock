@@ -308,7 +308,7 @@ source = { git = "https://github.com/v--/ruff-config-ivasilev.git?rev=v0.15post7
 
 [[package]]
 name = "searchtool-gtk"
-version = "2.3.0"
+version = "2.3.1"
 source = { editable = "." }
 dependencies = [
     { name = "pydantic" },
