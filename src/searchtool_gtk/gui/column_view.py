@@ -52,6 +52,7 @@ class SearchToolSorter[SearchItem = Any](Gtk.Sorter):
 class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
     store: Gio.ListStore
     filter_model: Gtk.FilterListModel
+    sorter: SearchToolSorter
     sort_model: Gtk.SortListModel
     selection: Gtk.SingleSelection
 
@@ -65,17 +66,9 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
         self.mode = mode
 
         self.store = Gio.ListStore()
-        self.sort_model = Gtk.SortListModel(
-            model=self.store,
-            incremental=True,
-            sorter=SearchToolSorter(mode),
-        )
-
-        self.filter_model = Gtk.FilterListModel(
-            model=self.sort_model,
-            incremental=True,
-        )
-
+        self.sorter = SearchToolSorter(mode)
+        self.sort_model = Gtk.SortListModel(model=self.store, incremental=True, sorter=self.sorter)
+        self.filter_model = Gtk.FilterListModel(model=self.sort_model, incremental=True)
         self.selection = Gtk.SingleSelection(model=self.filter_model)
 
         super().__init__(model=self.selection)
@@ -126,6 +119,9 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
             flags=Gtk.ListScrollFlags.NONE,
             scroll=None,
         )
+
+    def update_sorter(self) -> None:
+        self.sorter.emit('changed', Gtk.SorterChange.DIFFERENT)
 
     def select_first(self) -> None:
         if self.filter_model.get_n_items() > 0:

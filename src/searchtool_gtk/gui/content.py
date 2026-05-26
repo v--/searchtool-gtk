@@ -53,6 +53,9 @@ class SearchToolContent(Gtk.Box):
     def refresh_options(self) -> None:
         self.column_view.refresh_options()
 
+    def update_sorter(self) -> None:
+        self.column_view.update_sorter()
+
     def select_prev(self) -> None:
         self.column_view.select_prev()
 
