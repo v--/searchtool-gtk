@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any
+from typing import TYPE_CHECKING, Any, override
 
 from gi.repository import Gio, GLib, GObject, Gtk
 
@@ -34,6 +34,7 @@ class SearchToolSorter[SearchItem = Any](Gtk.Sorter):
         self.mode = mode
         self.collator = mode.get_collator()
 
+    @override
     def do_compare(self, a: GObject.Object | None = None, b: GObject.Object | None = None) -> Gtk.Ordering:
         if not isinstance(a, SearchToolEntity) or not isinstance(b, SearchToolEntity):
             raise SearchToolIntegrityError(f'Unknown sorted objects {a!r} and {b!r}.')

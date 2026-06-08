@@ -11,9 +11,9 @@ authors = [
 
 dependencies = [
   "msgspec (>=0.21)",
+  "platformdirs (>=4.10.0)",
   "pygobject (>=3.54)",
   "pyicu (>=2.16)",
-  "pyxdg (>=0.28)",
   "wcmatch (>=10)",
 ]
 
@@ -61,6 +61,5 @@ packages = ["searchtool_gtk"]
 [[tool.mypy.overrides]]
 module = [
   "icu.*",
-  "xdg.*"
 ]
 ignore_missing_imports = true

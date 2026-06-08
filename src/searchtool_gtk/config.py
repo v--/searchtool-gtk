@@ -1,17 +1,19 @@
-
 import importlib
 import json
 import tomllib
 import warnings
 from collections.abc import Mapping, Sequence
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import msgspec
-import xdg
-import xdg.BaseDirectory
+import platformdirs
 
 from .exceptions import SearchToolDeprecationWarning, SearchToolValidationError
 from .modes import SearchToolMode
+
+
+if TYPE_CHECKING:
+    import pathlib
 
 
 class SearchToolModeConfig(msgspec.Struct, forbid_unknown_fields=True):
@@ -28,39 +30,41 @@ ModeMapping = Mapping[str, SearchToolMode]
 
 
 def build_modes_from_config_file() -> ModeMapping:  # noqa: C901
-    toml_config_path = xdg.BaseDirectory.load_first_config('searchtool.toml')
-    json_config_path = xdg.BaseDirectory.load_first_config('searchtool.json')
-    config_path: str | None = None
     raw_config: Mapping[str, Any] | None = None
+    config_path: pathlib.Path | None = None
 
-    if toml_config_path:
-        try:
-            with open(toml_config_path, 'rb') as file:
-                raw_config = tomllib.load(file)
-        except FileNotFoundError:
-            pass
-        except tomllib.TOMLDecodeError as err:
-            raise SearchToolValidationError(f'Cannot decode {toml_config_path!r}') from err
-        else:
-            config_path = toml_config_path
+    for config_dir in [platformdirs.site_config_path(), platformdirs.user_config_path()]:
+        toml_config_path = config_dir / 'searchtool.toml'
+        json_config_path = config_dir / 'searchtool.json'
 
-    if raw_config is None and json_config_path:
-        try:
-            with open(json_config_path) as file:
-                raw_config = json.load(file)
-        except FileNotFoundError:
-            pass
-        except json.JSONDecodeError as err:
-            raise SearchToolValidationError(f'Cannot decode {json_config_path!r}') from err
-        else:
-            config_path = json_config_path
-            warnings.warn(
-                SearchToolDeprecationWarning('JSON configurations are deprecated; consider using searchtool.toml'),
-                stacklevel=2,
-            )
+        if toml_config_path:
+            try:
+                with open(toml_config_path, 'rb') as file:
+                    raw_config = tomllib.load(file)
+            except FileNotFoundError:
+                pass
+            except tomllib.TOMLDecodeError as err:
+                raise SearchToolValidationError(f'Cannot decode {toml_config_path!r}') from err
+            else:
+                config_path = toml_config_path
+
+        if raw_config is None and json_config_path:
+            try:
+                with open(json_config_path) as file:
+                    raw_config = json.load(file)
+            except FileNotFoundError:
+                pass
+            except json.JSONDecodeError as err:
+                raise SearchToolValidationError(f'Cannot decode {json_config_path!r}') from err
+            else:
+                config_path = json_config_path
+                warnings.warn(
+                    SearchToolDeprecationWarning('JSON configurations are deprecated; consider using searchtool.toml'),
+                    stacklevel=2,
+                )
 
     if raw_config is None:
-        raise SearchToolValidationError('Cannot find either searchtool.toml or searchtool.json in the XDG paths')
+        raise SearchToolValidationError('Cannot find either searchtool.toml or searchtool.json')
 
     try:
         config = msgspec.convert(raw_config, type=SearchToolConfig)
