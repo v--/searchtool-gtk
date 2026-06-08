@@ -36,7 +36,7 @@ class SearchToolSorter[SearchItem = Any](Gtk.Sorter):
 
     def do_compare(self, a: GObject.Object | None = None, b: GObject.Object | None = None) -> Gtk.Ordering:
         if not isinstance(a, SearchToolEntity) or not isinstance(b, SearchToolEntity):
-            return NotImplemented
+            raise SearchToolIntegrityError(f'Unknown sorted objects {a!r} and {b!r}.')
 
         cmp = self.collator.compare(a.si, b.si)
 

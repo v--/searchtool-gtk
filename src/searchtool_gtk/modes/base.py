@@ -19,7 +19,7 @@ class SearchToolMode[SearchItem = Any, ParamClass = Any](Protocol):
     def get_main_item_label(self, item: SearchItem) -> str:
         ...
 
-    def get_secondary_item_label(self, item: SearchItem) -> str:
+    def get_secondary_item_label(self, item: SearchItem) -> str | None:
         ...
 
     # Record that the item has been selected

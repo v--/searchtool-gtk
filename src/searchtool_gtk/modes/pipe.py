@@ -28,8 +28,8 @@ class PipeMode[SearchItem = Any, ParamClass = Any](SearchToolMode[SearchItem, Pa
         return str(item)
 
     @override
-    def get_secondary_item_label(self, item: SearchItem) -> str:
-        return ''
+    def get_secondary_item_label(self, item: SearchItem) -> str | None:
+        return None
 
     @override
     def fetch_items(self) -> Sequence[SearchItem]:
