@@ -2,14 +2,14 @@ import contextlib
 import os
 import pathlib
 import subprocess
+import warnings
 from collections.abc import Iterable, Sequence
 from enum import StrEnum
 from typing import override
-import warnings
 
+import msgspec
 from gi.repository import Gtk
 
-from searchtool_gtk.pydantic_helpers import StrictPydanticModel
 from searchtool_gtk.support.iteration import list_accumulator
 
 from .path import PathMode
@@ -28,7 +28,7 @@ class BinModeStreamOption(StrEnum):
                 return subprocess.DEVNULL
 
 
-class BinModeConfig(StrictPydanticModel):
+class BinModeConfig(msgspec.Struct, forbid_unknown_fields=True):
     stdout: BinModeStreamOption = BinModeStreamOption.DEVNULL
     stderr: BinModeStreamOption = BinModeStreamOption.DEVNULL
 
@@ -43,7 +43,7 @@ class BinMode(PathMode[BinModeConfig]):
         if param is None:
             return BinModeConfig()
 
-        return BinModeConfig.model_validate(param)
+        return msgspec.convert(param, type=BinModeConfig)
 
     def __init__(self, config: BinModeConfig) -> None:
         self.dirs = [pathlib.Path(d) for d in os.environ['PATH'].split(':')]

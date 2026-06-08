@@ -4,24 +4,23 @@ import json
 import tomllib
 import warnings
 from collections.abc import Mapping, Sequence
-from typing import Annotated, Any
+from typing import Any
 
-import pydantic
+import msgspec
 import xdg
 import xdg.BaseDirectory
 
 from .exceptions import SearchToolDeprecationWarning, SearchToolValidationError
 from .modes import SearchToolMode
-from .pydantic_helpers import StrictPydanticModel
 
 
-class SearchToolModeConfig(StrictPydanticModel):
+class SearchToolModeConfig(msgspec.Struct, forbid_unknown_fields=True):
     name: str
-    class_fqn: Annotated[str, pydantic.Field(alias='class')]
+    class_fqn: str = msgspec.field(name='class')
     param: Any = None
 
 
-class SearchToolConfig(StrictPydanticModel):
+class SearchToolConfig(msgspec.Struct, forbid_unknown_fields=True):
     modes: Sequence[SearchToolModeConfig]
 
 
@@ -64,8 +63,8 @@ def build_modes_from_config_file() -> ModeMapping:  # noqa: C901
         raise SearchToolValidationError('Cannot find either searchtool.toml or searchtool.json in the XDG paths')
 
     try:
-        config = SearchToolConfig.model_validate(raw_config, strict=True)
-    except pydantic.ValidationError as err:
+        config = msgspec.convert(raw_config, type=SearchToolConfig)
+    except msgspec.ValidationError as err:
         raise SearchToolValidationError(f'Invalid config in {config_path}') from err
 
     result: dict[str, SearchToolMode] = {}

@@ -1,4 +1,3 @@
-import contextlib
 import os.path
 import pathlib
 import subprocess
@@ -8,12 +7,12 @@ from glob import iglob
 from typing import override
 
 import icu
+import msgspec
 import wcmatch.glob
 from gi.repository import Gtk
 
 from searchtool_gtk.collation import PathCollator, StringCollator
 from searchtool_gtk.exceptions import SearchToolDeprecationWarning, SearchToolIntegrityError, SearchToolValidationError
-from searchtool_gtk.pydantic_helpers import StrictPydanticModel
 from searchtool_gtk.support.iteration import list_accumulator
 
 from .path import PathMode
@@ -25,16 +24,16 @@ def validate_wcmatch_flags(flags: Sequence[str]) -> None:
             raise SearchToolValidationError(f'Unrecognized wcmatch glob flag {f}')
 
 
-class LegacyFileModePattern(StrictPydanticModel):
+class LegacyFileModePattern(msgspec.Struct, forbid_unknown_fields=True):
     glob: str
     include_hidden: bool = False
     recursive: bool = False
 
 
-class FileModeConfig(StrictPydanticModel):
+class FileModeConfig(msgspec.Struct, forbid_unknown_fields=True):
     patterns: Sequence[str | LegacyFileModePattern]
     use_wcmatch: bool
-    wcmatch_flags: Sequence[str] = ['NEGATE', 'GLOBSTAR', 'BRACE', 'GLOBTILDE']
+    wcmatch_flags: Sequence[str] = msgspec.field(default_factory=lambda: ['NEGATE', 'GLOBSTAR', 'BRACE', 'GLOBTILDE'])
     icu_locale: str | None = None
     icu_strength: int = icu.Collator.PRIMARY
 
@@ -44,7 +43,7 @@ class FileMode(PathMode[FileModeConfig]):
 
     @classmethod
     def build_param_class(cls, param: object) -> FileModeConfig:
-        config = FileModeConfig.model_validate(param)
+        config = msgspec.convert(param, type=FileModeConfig)
 
         if config.use_wcmatch:
             validate_wcmatch_flags(config.wcmatch_flags)

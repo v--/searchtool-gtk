@@ -2,13 +2,14 @@ import contextlib
 from collections.abc import Iterable, Sequence
 from typing import override
 
+import msgspec
+
 from searchtool_gtk.collation import ClipHistCollator, ClipHistItem, StringCollator
-from searchtool_gtk.pydantic_helpers import StrictPydanticModel
 
 from .pipe import PipeMode
 
 
-class ClipHistModeConfig(StrictPydanticModel):
+class ClipHistModeConfig(msgspec.Struct, forbid_unknown_fields=True):
     icu_locale: str | None = None
     icu_strength: int = 0
 
@@ -32,7 +33,7 @@ class ClipHistMode(PipeMode[ClipHistItem, ClipHistModeConfig]):
         if param is None:
             return ClipHistModeConfig()
 
-        return ClipHistModeConfig.model_validate(param)
+        return msgspec.convert(param, type=ClipHistModeConfig)
 
     @override
     def digest_dbus_input(self, items: Sequence[str]) -> None:
