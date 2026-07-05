@@ -30,8 +30,8 @@ searchtool-gtk-activate = "searchtool_gtk:basic_client"
 dev = [
   "pygobject-stubs (>=2.16)",
   "mypy (>=2)",
-  "ruff (>=0.15)",
-  "ruff-config-ivasilev @ git+https://github.com/v--/ruff-config-ivasilev.git@v0.15post7",
+  "ruff (>=0.15.20)",
+  "ruff-config-ivasilev @ git+https://github.com/v--/ruff-config-ivasilev.git@v0.15.post9",
 ]
 
 [build-system]
@@ -46,12 +46,19 @@ resolution = "lowest-direct"
 # ruff
 [tool.ruff]
 extend = ".venv/share/ruff/ruff.ivasilev.toml"
+preview = true
 
 [tool.ruff.lint]
 ignore = [
-  "ARG001", # unused-function-argument (GTK callbacks)
-  "ARG002", # unused-method-argument (Overriden GTK methods are not recognized as overriden)
-  "D1",     # undocumented-*
+  # undocumented-*
+  "D1",
+
+  # GTK callbacks violate some rules often enough so blanket-ban the rules
+  "unused-function-argument",
+
+  # Overriden GTK methods are not recognized as overriden
+  "no-self-use",
+  "unused-method-argument",
 ]
 
 # mypy

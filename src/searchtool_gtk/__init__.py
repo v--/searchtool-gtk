@@ -1,4 +1,4 @@
-# ruff: noqa: E402
+# ruff: file-ignore[non-empty-init-module, module-import-not-at-top-of-file]
 import gi
 
 

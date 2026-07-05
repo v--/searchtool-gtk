@@ -29,7 +29,8 @@ class SearchToolConfig(msgspec.Struct, forbid_unknown_fields=True):
 ModeMapping = Mapping[str, SearchToolMode]
 
 
-def build_modes_from_config_file() -> ModeMapping:  # noqa: C901
+# ruff: ignore[complex-structure]
+def build_modes_from_config_file() -> ModeMapping:
     raw_config: Mapping[str, Any] | None = None
     config_path: pathlib.Path | None = None
 
@@ -50,7 +51,7 @@ def build_modes_from_config_file() -> ModeMapping:  # noqa: C901
 
         if raw_config is None and json_config_path:
             try:
-                with open(json_config_path) as file:
+                with open(json_config_path, encoding='utf-8') as file:
                     raw_config = json.load(file)
             except FileNotFoundError:
                 pass
