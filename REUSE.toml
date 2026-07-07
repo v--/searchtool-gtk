@@ -1,0 +1,27 @@
+version = 1
+
+[[annotations]]
+path = [
+  ".gitignore",
+  ".python-version",
+  "CHANGELOG.md",
+  "Makefile",
+  "pyproject.toml",
+  "README.md",
+  "REUSE.toml",
+  "searchtool.toml",
+  "src/**.c",
+  "src/**.py",
+]
+SPDX-FileCopyrightText = "Ianis Vasilev <ianis@ivasilev.net>"
+SPDX-License-Identifier = "Unlicense"
+
+# The REUSE documentation suggests licensing generated files under CC0-1.0 with NONE as author.
+# https://reuse.software/faq/#exclude-file
+[[annotations]]
+path = [
+  "screenshot.png",
+  "uv.lock",
+]
+SPDX-FileCopyrightText = "NONE"
+SPDX-License-Identifier = "CC0-1.0"
