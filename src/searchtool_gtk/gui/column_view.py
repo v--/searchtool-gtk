@@ -51,7 +51,7 @@ class SearchToolSorter[SearchItem: Hashable](Gtk.Sorter):
 
 
 class SearchToolColumnView[SearchItem: Hashable](Gtk.ColumnView):
-    store: Gio.ListStore
+    store: Gio.ListStore[SearchToolEntity[SearchItem]]
     filter_model: Gtk.FilterListModel
     sorter: SearchToolSorter[SearchItem]
     sort_model: Gtk.SortListModel
