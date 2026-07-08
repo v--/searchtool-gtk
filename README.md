@@ -32,7 +32,10 @@ Given the [default configuration](./searchtool.toml.example), we can launch the 
 
 The `dmenu` tool can be used as follows (after configuring a `ClipHistMode` mode named "Clipboard"):
 
-    cliphist list | searchtool-gtk-dmenu Clipboard | cliphist decode | wl-copy
+    cliphist list | searchtool-gtk-dmenu Clipboard | cliphist decode | wl-copy --type text/plain
+
+> [!NOTE]
+> wl-copy tries to detect the MIME type of its input by default, so, without the `--type` option, copying can lead to unexpected behavior.
 
 Once the popup is launched, usage is obvious:
 
