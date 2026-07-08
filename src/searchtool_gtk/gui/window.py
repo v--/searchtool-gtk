@@ -1,3 +1,4 @@
+from collections.abc import Hashable
 from typing import override
 
 from gi.repository import Adw, Gio, GObject, Gtk
@@ -7,7 +8,7 @@ from searchtool_gtk.modes import SearchToolMode
 from .content import SearchToolContent
 
 
-class SearchToolWindow[SearchItem](Adw.ApplicationWindow):
+class SearchToolWindow[SearchItem: Hashable](Adw.ApplicationWindow):
     content: SearchToolContent[SearchItem]
     mode: SearchToolMode[SearchItem]
 

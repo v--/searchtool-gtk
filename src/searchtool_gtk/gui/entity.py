@@ -1,7 +1,9 @@
+from collections.abc import Hashable
+
 from gi.repository import GObject, Gtk, Pango
 
 
-class SearchToolEntity[SearchItem](GObject.Object):
+class SearchToolEntity[SearchItem: Hashable](GObject.Object):
     si: SearchItem
 
     def __init__(self, si: SearchItem) -> None:

@@ -3,7 +3,7 @@ import importlib
 import json
 import tomllib
 import warnings
-from collections.abc import Mapping, Sequence
+from collections.abc import Hashable, Mapping, Sequence
 from typing import TYPE_CHECKING, Any
 
 import msgspec
@@ -36,12 +36,12 @@ class SearchToolConfig(msgspec.Struct, forbid_unknown_fields=True):
     modes: Mapping[str, SearchToolModeConfig]
 
 
-ModeMapping = Mapping[str, SearchToolMode[Any]]
+ModeMapping = Mapping[str, SearchToolMode[Hashable]]
 
 
 # ruff: ignore[complex-structure]
 def build_modes_from_config_file() -> ModeMapping:
-    raw_config: Mapping[str, Any] | None = None
+    raw_config: Mapping[str, Hashable] | None = None
     config_path: pathlib.Path | None = None
 
     for config_dir in [platformdirs.site_config_path(), platformdirs.user_config_path()]:
@@ -101,7 +101,7 @@ def build_modes_from_config_file() -> ModeMapping:
         except msgspec.ValidationError as err:
             raise SearchToolValidationError(f'Invalid config in {config_path}') from err
 
-    result: dict[str, SearchToolMode[Any]] = {}
+    result: dict[str, SearchToolMode[Hashable]] = {}
 
     for mode_name, mode_config in config.modes.items():
         module_name, _, class_name = mode_config.class_fqn.rpartition('.')

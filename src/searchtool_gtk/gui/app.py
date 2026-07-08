@@ -1,5 +1,5 @@
-from collections.abc import Mapping, Sequence
-from typing import Any, override
+from collections.abc import Hashable, Mapping, Sequence
+from typing import override
 
 from gi.repository import Adw, Gio, GLib
 
@@ -28,7 +28,7 @@ DBUS_INTERFACE = """<node>
 
 
 class SearchToolApp(Adw.Application):
-    windows: Mapping[str, SearchToolWindow[Any]]
+    windows: Mapping[str, SearchToolWindow[Hashable]]
     modes: ModeMapping
 
     def __init__(self, modes: ModeMapping) -> None:

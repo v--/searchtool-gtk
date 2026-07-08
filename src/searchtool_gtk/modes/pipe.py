@@ -1,4 +1,4 @@
-from collections.abc import Sequence
+from collections.abc import Hashable, Sequence
 from typing import override
 
 from gi.repository import Gio, GLib
@@ -8,8 +8,7 @@ from searchtool_gtk.exceptions import SearchToolValidationError
 from .base import SearchToolMode
 
 
-# This is an abstract base class for several real modes
-class PipeMode[SearchItem](SearchToolMode[SearchItem]):
+class PipeMode[SearchItem: Hashable](SearchToolMode[SearchItem]):
     # The invocation and list are populated on demand by calling the handle_dbus_input method
     invocation: Gio.DBusMethodInvocation | None
     items: Sequence[SearchItem]

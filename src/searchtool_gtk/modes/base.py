@@ -1,11 +1,11 @@
-from collections.abc import Sequence
+from collections.abc import Hashable, Sequence
 from typing import Protocol, Self, runtime_checkable
 
 from searchtool_gtk.collation import SearchToolCollator
 
 
 @runtime_checkable
-class SearchToolMode[SearchItem](Protocol):
+class SearchToolMode[SearchItem: Hashable](Protocol):
     @classmethod
     def from_config(cls, param: object) -> Self:
         ...

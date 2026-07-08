@@ -5,7 +5,7 @@ from .base import SearchToolCollator
 from .string import StringCollator
 
 
-@dataclass
+@dataclass(frozen=True)
 class ClipHistItem:
     id: int
     value: str

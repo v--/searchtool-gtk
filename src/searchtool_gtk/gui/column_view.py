@@ -1,4 +1,4 @@
-from collections.abc import Sequence
+from collections.abc import Hashable, Sequence
 from typing import TYPE_CHECKING, override
 
 from gi.repository import Gio, GLib, GObject, Gtk
@@ -10,7 +10,7 @@ from searchtool_gtk.modes import SearchToolMode
 from .entity import SearchToolEntity, SearchToolEntityWidget
 
 
-class SearchToolFilter[SearchItem](Gtk.Filter):
+class SearchToolFilter[SearchItem: Hashable](Gtk.Filter):
     mode: SearchToolMode[SearchItem]
     collator: SearchToolCollator[SearchItem]
     filter_string: str
@@ -25,7 +25,7 @@ class SearchToolFilter[SearchItem](Gtk.Filter):
         return isinstance(item, SearchToolEntity) and self.collator.match_item(item.si, self.filter_string)
 
 
-class SearchToolSorter[SearchItem](Gtk.Sorter):
+class SearchToolSorter[SearchItem: Hashable](Gtk.Sorter):
     mode: SearchToolMode[SearchItem]
     collator: SearchToolCollator[SearchItem]
 
@@ -50,7 +50,7 @@ class SearchToolSorter[SearchItem](Gtk.Sorter):
         return Gtk.Ordering.EQUAL
 
 
-class SearchToolColumnView[SearchItem](Gtk.ColumnView):
+class SearchToolColumnView[SearchItem: Hashable](Gtk.ColumnView):
     store: Gio.ListStore
     filter_model: Gtk.FilterListModel
     sorter: SearchToolSorter[SearchItem]
@@ -114,12 +114,13 @@ class SearchToolColumnView[SearchItem](Gtk.ColumnView):
         self.filter_model.set_filter(SearchToolFilter(self.mode, text) if text is not None else None)
 
     def scroll_to_current(self) -> None:
-        self.scroll_to(
-            pos=self.selection.get_selected() or 0,
-            column=None,
-            flags=Gtk.ListScrollFlags.NONE,
-            scroll=None,
-        )
+        if len(self.cached_items) > 0:
+            self.scroll_to(
+                pos=self.selection.get_selected() or 0,
+                column=None,
+                flags=Gtk.ListScrollFlags.NONE,
+                scroll=None,
+            )
 
     def update_sorter(self) -> None:
         self.sorter.emit('changed', Gtk.SorterChange.DIFFERENT)
@@ -158,17 +159,22 @@ class SearchToolColumnView[SearchItem](Gtk.ColumnView):
         self.scroll_to_current()
 
     def refresh_options(self) -> None:
+        existing = {item: i for i, item in enumerate(self.cached_items)}
+        to_be_removed = set(existing.values())
         new_items = self.mode.fetch_items()
 
-        if self.cached_items == new_items:
-            return
+        for item in new_items:
+            try:
+                index = existing[item]
+            except KeyError:
+                self.store.append(SearchToolEntity(item))
+            else:
+                to_be_removed.remove(index)
+
+        for i in to_be_removed:
+            self.store.remove(i)
 
         self.cached_items = new_items
-        self.store.remove_all()
-
-        for item in new_items:
-            self.store.append(SearchToolEntity(item))
-
         self.scroll_to_current()
 
     def get_selected(self) -> SearchItem | None:

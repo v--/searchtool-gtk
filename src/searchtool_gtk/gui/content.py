@@ -1,3 +1,5 @@
+from collections.abc import Hashable
+
 from gi.repository import Gtk
 
 from searchtool_gtk.modes import SearchToolMode
@@ -10,7 +12,7 @@ GUI_HEIGHT = 400
 GUI_SPACING = 20
 
 
-class SearchToolContent[SearchItem](Gtk.Box):
+class SearchToolContent[SearchItem: Hashable](Gtk.Box):
     scroll_box: Gtk.ScrolledWindow
     outer_box: Gtk.Box
     submit_button: Gtk.Button
