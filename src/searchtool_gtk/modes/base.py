@@ -1,16 +1,16 @@
 from collections.abc import Sequence
-from typing import Any, Protocol, runtime_checkable
+from typing import Protocol, Self, runtime_checkable
 
 from searchtool_gtk.collation import SearchToolCollator
 
 
 @runtime_checkable
-class SearchToolMode[SearchItem = Any, ParamClass = Any](Protocol):
+class SearchToolMode[SearchItem](Protocol):
     @classmethod
-    def build_param_class(cls, param: object) -> ParamClass:
+    def from_config(cls, param: object) -> Self:
         ...
 
-    def get_collator(self) -> SearchToolCollator:
+    def get_collator(self) -> SearchToolCollator[SearchItem]:
         ...
 
     def fetch_items(self) -> Sequence[SearchItem]:

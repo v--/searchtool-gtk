@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+* Improve mode typing and mode construction.
 * Deprecate the flat config format in favor of TOML tables.
 
 ## 2.4.1 - 2026-07-08

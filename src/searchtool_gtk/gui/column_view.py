@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import TYPE_CHECKING, Any, override
+from typing import TYPE_CHECKING, override
 
 from gi.repository import Gio, GLib, GObject, Gtk
 
@@ -10,7 +10,7 @@ from searchtool_gtk.modes import SearchToolMode
 from .entity import SearchToolEntity, SearchToolEntityWidget
 
 
-class SearchToolFilter[SearchItem = Any](Gtk.Filter):
+class SearchToolFilter[SearchItem](Gtk.Filter):
     mode: SearchToolMode[SearchItem]
     collator: SearchToolCollator[SearchItem]
     filter_string: str
@@ -25,7 +25,7 @@ class SearchToolFilter[SearchItem = Any](Gtk.Filter):
         return isinstance(item, SearchToolEntity) and self.collator.match_item(item.si, self.filter_string)
 
 
-class SearchToolSorter[SearchItem = Any](Gtk.Sorter):
+class SearchToolSorter[SearchItem](Gtk.Sorter):
     mode: SearchToolMode[SearchItem]
     collator: SearchToolCollator[SearchItem]
 
@@ -50,10 +50,10 @@ class SearchToolSorter[SearchItem = Any](Gtk.Sorter):
         return Gtk.Ordering.EQUAL
 
 
-class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
+class SearchToolColumnView[SearchItem](Gtk.ColumnView):
     store: Gio.ListStore
     filter_model: Gtk.FilterListModel
-    sorter: SearchToolSorter
+    sorter: SearchToolSorter[SearchItem]
     sort_model: Gtk.SortListModel
     selection: Gtk.SingleSelection
 
@@ -61,7 +61,7 @@ class SearchToolColumnView[SearchItem = Any](Gtk.ColumnView):
     cached_items: Sequence[SearchItem]
     mode: SearchToolMode[SearchItem]
 
-    def __init__(self, title: str, mode: SearchToolMode) -> None:
+    def __init__(self, title: str, mode: SearchToolMode[SearchItem]) -> None:
         self.title = title
         self.cached_items = []
         self.mode = mode

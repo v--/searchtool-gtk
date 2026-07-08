@@ -36,7 +36,7 @@ class SearchToolConfig(msgspec.Struct, forbid_unknown_fields=True):
     modes: Mapping[str, SearchToolModeConfig]
 
 
-ModeMapping = Mapping[str, SearchToolMode]
+ModeMapping = Mapping[str, SearchToolMode[Any]]
 
 
 # ruff: ignore[complex-structure]
@@ -101,11 +101,10 @@ def build_modes_from_config_file() -> ModeMapping:
         except msgspec.ValidationError as err:
             raise SearchToolValidationError(f'Invalid config in {config_path}') from err
 
-    result: dict[str, SearchToolMode] = {}
+    result: dict[str, SearchToolMode[Any]] = {}
 
     for mode_name, mode_config in config.modes.items():
         module_name, _, class_name = mode_config.class_fqn.rpartition('.')
-        mode_param: Any = None
 
         try:
             mode_class = getattr(importlib.import_module(module_name), class_name)
@@ -116,10 +115,8 @@ def build_modes_from_config_file() -> ModeMapping:
             raise SearchToolValidationError(f'The class {mode_config.class_fqn} required by mode {mode_name!r} does not satisfy the <SearchToolMode> protocol')
 
         try:
-            mode_param = mode_class.build_param_class(mode_config.param)
+            result[mode_name] = mode_class.from_config(mode_config.param)
         except Exception as err:
-            raise SearchToolValidationError(f'Could not initialize parameters for {mode_name!r}') from err
-
-        result[mode_name] = mode_class(mode_param) if mode_param is not None else mode_class()
+            raise SearchToolValidationError(f'Could not initialize mode for {mode_name!r}') from err
 
     return result

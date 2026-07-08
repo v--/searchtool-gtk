@@ -7,11 +7,11 @@ from searchtool_gtk.modes import SearchToolMode
 from .content import SearchToolContent
 
 
-class SearchToolWindow(Adw.ApplicationWindow):
-    content: SearchToolContent
-    mode: SearchToolMode
+class SearchToolWindow[SearchItem](Adw.ApplicationWindow):
+    content: SearchToolContent[SearchItem]
+    mode: SearchToolMode[SearchItem]
 
-    def __init__(self, application: Gtk.Application, mode_name: str, mode: SearchToolMode) -> None:
+    def __init__(self, application: Gtk.Application, mode_name: str, mode: SearchToolMode[SearchItem]) -> None:
         super().__init__(
             application=application,
             title=f'SearchTool GTK: {mode_name}',

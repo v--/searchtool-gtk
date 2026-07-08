@@ -4,7 +4,7 @@ import subprocess
 import warnings
 from collections.abc import Iterable, Iterator, Sequence
 from glob import iglob
-from typing import override
+from typing import Self, override
 
 import icu
 import msgspec
@@ -38,12 +38,12 @@ class FileModeConfig(msgspec.Struct, forbid_unknown_fields=True):
     icu_strength: int = icu.Collator.PRIMARY
 
 
-class FileMode(PathMode[FileModeConfig]):
+class FileMode(PathMode[pathlib.Path]):
     config: FileModeConfig
 
     @classmethod
-    def build_param_class(cls, param: object) -> FileModeConfig:
-        config = msgspec.convert(param, type=FileModeConfig)
+    def from_config(cls, param: object) -> Self:
+        config = msgspec.convert(param or {}, type=FileModeConfig)
 
         if config.use_wcmatch:
             validate_wcmatch_flags(config.wcmatch_flags)
@@ -57,7 +57,7 @@ class FileMode(PathMode[FileModeConfig]):
                 stacklevel=2,
             )
 
-        return config
+        return cls(config)
 
     def __init__(self, config: FileModeConfig) -> None:
         self.config = config

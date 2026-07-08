@@ -1,6 +1,6 @@
 import contextlib
 from collections.abc import Iterable, Sequence
-from typing import override
+from typing import Self, override
 
 import msgspec
 
@@ -25,15 +25,12 @@ def iter_cliphist_items(strings: Sequence[str]) -> Iterable[ClipHistItem]:
                 yield ClipHistItem(int(i), text)
 
 
-class ClipHistMode(PipeMode[ClipHistItem, ClipHistModeConfig]):
+class ClipHistMode(PipeMode[ClipHistItem]):
     config: ClipHistModeConfig
 
     @classmethod
-    def build_param_class(cls, param: object) -> ClipHistModeConfig:
-        if param is None:
-            return ClipHistModeConfig()
-
-        return msgspec.convert(param, type=ClipHistModeConfig)
+    def from_config(cls, param: object) -> Self:
+        return cls(msgspec.convert(param or {}, type=ClipHistModeConfig))
 
     @override
     def digest_dbus_input(self, items: Sequence[str]) -> None:

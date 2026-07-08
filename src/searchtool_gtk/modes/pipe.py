@@ -1,16 +1,15 @@
 from collections.abc import Sequence
-from typing import Any, override
+from typing import override
 
 from gi.repository import Gio, GLib
 
-from searchtool_gtk.collation import SearchToolCollator, StringCollator
 from searchtool_gtk.exceptions import SearchToolValidationError
 
 from .base import SearchToolMode
 
 
 # This is an abstract base class for several real modes
-class PipeMode[SearchItem = Any, ParamClass = Any](SearchToolMode[SearchItem, ParamClass]):
+class PipeMode[SearchItem](SearchToolMode[SearchItem]):
     # The invocation and list are populated on demand by calling the handle_dbus_input method
     invocation: Gio.DBusMethodInvocation | None
     items: Sequence[SearchItem]
@@ -18,10 +17,6 @@ class PipeMode[SearchItem = Any, ParamClass = Any](SearchToolMode[SearchItem, Pa
     def __init__(self) -> None:
         self.invocation = None
         self.items = []
-
-    @override
-    def get_collator(self) -> SearchToolCollator:
-        return StringCollator()
 
     @override
     def get_main_item_label(self, item: SearchItem) -> str:

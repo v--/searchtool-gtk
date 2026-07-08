@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Any, override
+from typing import override
 
 from gi.repository import Gtk
 
@@ -9,7 +9,7 @@ from .base import SearchToolMode
 
 
 # This is an abstract base class for several real modes
-class PathMode[ParamClass = Any](SearchToolMode[Path, ParamClass]):
+class PathMode[ParamClass](SearchToolMode[Path]):
     recent: Gtk.RecentManager
 
     @override

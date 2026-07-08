@@ -80,6 +80,7 @@ ignore = [
 # mypy
 [tool.mypy]
 packages = ["searchtool_gtk"]
+disallow_any_generics = true
 
 [[tool.mypy.overrides]]
 module = [
