@@ -271,7 +271,7 @@ source = { git = "https://github.com/v--/ruff-config-ivasilev.git?rev=v0.15.post
 
 [[package]]
 name = "searchtool-gtk"
-version = "2.4.0"
+version = "2.4.1"
 source = { editable = "." }
 dependencies = [
     { name = "msgspec" },
