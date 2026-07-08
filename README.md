@@ -26,13 +26,13 @@ Each mode is determined by a name and a fully qualified Python class name, so cr
 
 Launching the tool is done by simply launching `searchtool-gtk-server`.
 
-Given the [default configuration](./searchtool.toml.example), we can launch the "Binary" mode as follows:
+Given the [default configuration](./searchtool.toml), we can launch the "binary" mode as follows:
 
-    searchtool-gtk-activate Binary
+    searchtool-gtk-activate binary
 
-The `dmenu` tool can be used as follows (after configuring a `ClipHistMode` mode named "Clipboard"):
+The `dmenu` tool can be used as follows (after configuring a `ClipHistMode` mode named "clipboard"):
 
-    cliphist list | searchtool-gtk-dmenu Clipboard | cliphist decode | wl-copy --type text/plain
+    cliphist list | searchtool-gtk-dmenu clipboard | cliphist decode | wl-copy --type text/plain
 
 > [!NOTE]
 > wl-copy tries to detect the MIME type of its input by default, so, without the `--type` option, copying can lead to unexpected behavior.
@@ -48,7 +48,11 @@ The mode for files (and binaries) uses GTK's recent file history to sort files b
 
 ## Installation
 
-An easy way to install the three executables (`searchtool-gtk-{server,activate,dmenu}`) for the current user is via [`uv`](https://docs.astral.sh/uv/):
+An easy way to install the three executables (`searchtool-gtk-{server,activate,dmenu}`) for the current user is via [`pipx`](https://pipx.pypa.io):
+
+    pipx install git+https://github.com/v--/searchtool-gtk
+
+An alternative is to use [`uv`](https://docs.astral.sh/uv/):
 
     uv tool install searchtool-gtk --from git+https://github.com/v--/searchtool-gtk
 
@@ -67,11 +71,11 @@ For performance reasons, the package also provides native counterparts to the Py
     install -D -m755 dist/searchtool-gtk-dmenu "$dest/searchtool-gtk-dmenu"
 
 > [!TIP]
-> An [AUR package](https://aur.archlinux.org/packages/searchtool-gtk) is available for reference, as well as a [GitHub Action](./.github/workflows/lint.yaml). If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=searchtool-gtk).
+> An [AUR package](https://aur.archlinux.org/packages/searchtool-gtk) is available for reference. If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=searchtool-gtk).
 
 ## Configuration
 
-We use the [XDG config directories](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) (the defaults should be `/etc/xdg` or `~/.config`) to search for a user configuration file named `searchtool.toml`. The format should be clear from [`searchtool.toml.example`](./searchtool.toml.example).
+We use the [XDG config directories](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) (the defaults should be `/etc/xdg` or `~/.config`) to search for a user configuration file named `searchtool.toml`. The format should be clear from [`searchtool.toml.example`](./searchtool.toml).
 
 ## Motivation
 

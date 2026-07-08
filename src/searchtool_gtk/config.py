@@ -1,3 +1,4 @@
+import contextlib
 import importlib
 import json
 import tomllib
@@ -16,14 +17,23 @@ if TYPE_CHECKING:
     import pathlib
 
 
-class SearchToolModeConfig(msgspec.Struct, forbid_unknown_fields=True):
+class LegacySearchToolModeConfig(msgspec.Struct, forbid_unknown_fields=True):
     name: str
     class_fqn: str = msgspec.field(name='class')
     param: Any = None
 
 
+class LegacySearchToolConfig(msgspec.Struct, forbid_unknown_fields=True):
+    modes: Sequence[LegacySearchToolModeConfig]
+
+
+class SearchToolModeConfig(msgspec.Struct, forbid_unknown_fields=True):
+    class_fqn: str = msgspec.field(name='class')
+    param: Any = None
+
+
 class SearchToolConfig(msgspec.Struct, forbid_unknown_fields=True):
-    modes: Sequence[SearchToolModeConfig]
+    modes: Mapping[str, SearchToolModeConfig]
 
 
 ModeMapping = Mapping[str, SearchToolMode]
@@ -67,33 +77,49 @@ def build_modes_from_config_file() -> ModeMapping:
     if raw_config is None:
         raise SearchToolValidationError('Cannot find either searchtool.toml or searchtool.json')
 
-    try:
-        config = msgspec.convert(raw_config, type=SearchToolConfig)
-    except msgspec.ValidationError as err:
-        raise SearchToolValidationError(f'Invalid config in {config_path}') from err
+    config: SearchToolConfig | None = None
+    legacy_config: LegacySearchToolConfig | None = None
+
+    with contextlib.suppress(msgspec.ValidationError):
+        legacy_config = msgspec.convert(raw_config, type=LegacySearchToolConfig)
+
+    if legacy_config:
+        warnings.warn(
+            SearchToolDeprecationWarning('Legacy "flat" configuration format detected. Consider using tables with modes as names.'),
+            stacklevel=2,
+        )
+
+        config = SearchToolConfig(
+            modes={
+                mc.name: SearchToolModeConfig(mc.class_fqn, mc.param) for mc in legacy_config.modes
+            },
+        )
+
+    if config is None:
+        try:
+            config = msgspec.convert(raw_config, type=SearchToolConfig)
+        except msgspec.ValidationError as err:
+            raise SearchToolValidationError(f'Invalid config in {config_path}') from err
 
     result: dict[str, SearchToolMode] = {}
 
-    for mode_config in config.modes:
+    for mode_name, mode_config in config.modes.items():
         module_name, _, class_name = mode_config.class_fqn.rpartition('.')
         mode_param: Any = None
 
         try:
             mode_class = getattr(importlib.import_module(module_name), class_name)
         except (ImportError, AttributeError) as err:
-            raise SearchToolValidationError(f'Cannot import class {mode_config.class_fqn} required by mode {mode_config.name!r}') from err
+            raise SearchToolValidationError(f'Cannot import class {mode_config.class_fqn} required by mode {mode_name!r}') from err
 
         if not issubclass(mode_class, SearchToolMode):
-            raise SearchToolValidationError(f'The class {mode_config.class_fqn} required by mode {mode_config.name!r} does not satisfy the <SearchToolMode> protocol')
+            raise SearchToolValidationError(f'The class {mode_config.class_fqn} required by mode {mode_name!r} does not satisfy the <SearchToolMode> protocol')
 
         try:
             mode_param = mode_class.build_param_class(mode_config.param)
         except Exception as err:
-            raise SearchToolValidationError(f'Could not initialize parameters for {mode_config.name!r}') from err
+            raise SearchToolValidationError(f'Could not initialize parameters for {mode_name!r}') from err
 
-        if mode_config.name in result:
-            raise SearchToolValidationError(f'More than one mode has name {mode_config.name!r}')
-
-        result[mode_config.name] = mode_class(mode_param) if mode_param is not None else mode_class()
+        result[mode_name] = mode_class(mode_param) if mode_param is not None else mode_class()
 
     return result
