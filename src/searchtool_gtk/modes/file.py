@@ -1,7 +1,7 @@
 import pathlib
 import subprocess
 import warnings
-from collections.abc import Iterable, Sequence
+from collections.abc import Sequence
 from typing import override
 
 import icu
@@ -10,7 +10,6 @@ import wcmatch.glob
 
 from searchtool_gtk.collation import PathCollator, StringCollator
 from searchtool_gtk.exceptions import SearchToolValidationError
-from searchtool_gtk.support.iteration import list_accumulator
 
 from .path import PathMode
 
@@ -44,12 +43,13 @@ class FileMode(PathMode):
         )
 
     @override
-    @list_accumulator
-    def fetch_items(self) -> Iterable[pathlib.Path]:
+    def fetch_items(self) -> Sequence[pathlib.Path]:
         flags = sum(getattr(wcmatch.glob, f) for f in self.config.wcmatch_flags)
 
-        for path in wcmatch.glob.iglob(self.config.patterns, flags=flags):
-            yield pathlib.Path(path)
+        return [
+            pathlib.Path(path)
+            for path in wcmatch.glob.iglob(self.config.patterns, flags=flags)
+        ]
 
     @override
     def activate_item(self, item: pathlib.Path) -> None:

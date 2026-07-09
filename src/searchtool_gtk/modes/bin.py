@@ -6,8 +6,6 @@ import warnings
 from collections.abc import Iterable, Sequence
 from typing import override
 
-from searchtool_gtk.support.iteration import list_accumulator
-
 from .path import PathMode
 
 
@@ -18,12 +16,14 @@ class BinMode(PathMode):
         super().__init__()
         self.dirs = [pathlib.Path(d) for d in os.environ['PATH'].split(':')]
 
-    @override
-    @list_accumulator
-    def fetch_items(self) -> Iterable[pathlib.Path]:
+    def iter_items(self) -> Iterable[pathlib.Path]:
         for dir_ in self.dirs:
             with contextlib.suppress(FileNotFoundError):
                 yield from dir_.iterdir()
+
+    @override
+    def fetch_items(self) -> Sequence[pathlib.Path]:
+        return list(self.iter_items())
 
     @override
     def activate_item(self, item: pathlib.Path) -> None:
