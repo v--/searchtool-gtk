@@ -45,7 +45,7 @@ class SearchToolApp(Adw.Application):
     @override
     def do_activate(self) -> None:
         self.windows = {
-            name: SearchToolWindow(self, name, mode) for name, mode in self.modes.items()
+            name: SearchToolWindow(self, mode) for name, mode in self.modes.items()
         }
 
         conn = self.get_dbus_connection()

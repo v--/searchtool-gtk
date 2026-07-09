@@ -29,14 +29,18 @@ class ClipHistMode(PipeMode[ClipHistItem]):
     __searchtool_config_type__ = ClipHistModeConfig
     config: ClipHistModeConfig
 
-    @override
-    def digest_dbus_input(self, items: Sequence[str]) -> None:
-        self.items = list(iter_cliphist_items(items))
-
     # We ignore the journal because access should be logger by cliphist
     def __init__(self, config: ClipHistModeConfig) -> None:
         super().__init__()
         self.config = config
+
+    @override
+    def digest_dbus_input(self, items: Sequence[str]) -> None:
+        self.items = list(iter_cliphist_items(items))
+
+    @override
+    def get_title(self) -> str:
+        return 'Clipboard history'
 
     @override
     def get_collator(self) -> ClipHistCollator:

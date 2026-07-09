@@ -57,12 +57,10 @@ class SearchToolColumnView[SearchItem: Hashable](Gtk.ColumnView):
     sort_model: Gtk.SortListModel
     selection: Gtk.SingleSelection
 
-    title: str
     cached_items: Sequence[SearchItem]
     mode: SearchToolMode[SearchItem]
 
-    def __init__(self, title: str, mode: SearchToolMode[SearchItem]) -> None:
-        self.title = title
+    def __init__(self, mode: SearchToolMode[SearchItem]) -> None:
         self.cached_items = []
         self.mode = mode
 
@@ -77,7 +75,7 @@ class SearchToolColumnView[SearchItem: Hashable](Gtk.ColumnView):
         self.filter_model.connect('items-changed', self.on_items_changed)
 
         column_factory = Gtk.SignalListItemFactory()
-        column = Gtk.ColumnViewColumn(factory=column_factory, title=title, expand=True)
+        column = Gtk.ColumnViewColumn(factory=column_factory, title=self.mode.get_title(), expand=True)
         column_factory.connect('setup', self.column_setup)
         column_factory.connect('bind', self.column_bind)
 

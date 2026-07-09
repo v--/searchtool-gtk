@@ -12,17 +12,16 @@ class SearchToolWindow[SearchItem: Hashable](Adw.ApplicationWindow):
     content: SearchToolContent[SearchItem]
     mode: SearchToolMode[SearchItem]
 
-    def __init__(self, application: Gtk.Application, mode_name: str, mode: SearchToolMode[SearchItem]) -> None:
+    def __init__(self, application: Gtk.Application, mode: SearchToolMode[SearchItem]) -> None:
         super().__init__(
             application=application,
-            title=f'SearchTool GTK: {mode_name}',
+            title=f'SearchTool GTK: {mode.get_title()}',
             accessible_role=Gtk.AccessibleRole.DIALOG,
         )
 
-        self.mode_name = mode_name
         self.mode = mode
 
-        self.content = SearchToolContent(mode_name, mode)
+        self.content = SearchToolContent(mode)
         self.set_content(self.content)
         self.content.set_key_capture_widget(self)
 

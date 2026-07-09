@@ -16,6 +16,9 @@ class BinMode(PathMode):
         super().__init__()
         self.dirs = [pathlib.Path(d) for d in os.environ['PATH'].split(':')]
 
+    def get_title(self) -> str:
+        return 'Binaries'
+
     def iter_items(self) -> Iterable[pathlib.Path]:
         for dir_ in self.dirs:
             with contextlib.suppress(FileNotFoundError):

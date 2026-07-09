@@ -12,6 +12,9 @@ class SearchToolModeConfig(msgspec.Struct):
 
 @runtime_checkable
 class SearchToolMode[SearchItem: Hashable](Protocol):
+    def get_title(self) -> str:
+        ...
+
     def get_collator(self) -> SearchToolCollator[SearchItem]:
         ...
 

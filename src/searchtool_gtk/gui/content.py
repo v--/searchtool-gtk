@@ -19,13 +19,10 @@ class SearchToolContent[SearchItem: Hashable](Gtk.Box):
     input_widget: Gtk.Entry
     column_view: SearchToolColumnView[SearchItem]
 
-    mode_name: str
     mode: SearchToolMode[SearchItem]
 
-    def __init__(self, mode_name: str, mode: SearchToolMode[SearchItem]) -> None:
+    def __init__(self, mode: SearchToolMode[SearchItem]) -> None:
         super().__init__()
-
-        self.mode_name = mode_name
         self.mode = mode
 
         self.outer_box = Gtk.Box()
@@ -44,7 +41,7 @@ class SearchToolContent[SearchItem: Hashable](Gtk.Box):
         self.scroll_box.set_min_content_height(GUI_HEIGHT)
         self.outer_box.append(self.scroll_box)
 
-        self.column_view = SearchToolColumnView(mode_name, mode)
+        self.column_view = SearchToolColumnView(mode)
         self.scroll_box.set_child(self.column_view)
 
     def on_input(self, widget: Gtk.Entry) -> None:

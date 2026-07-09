@@ -23,6 +23,7 @@ def validate_wcmatch_flags(flags: Sequence[str]) -> None:
 class FileModeConfig(msgspec.Struct, forbid_unknown_fields=True):
     patterns: Sequence[str]
     wcmatch_flags: Sequence[str] = msgspec.field(default_factory=lambda: ['NEGATE', 'GLOBSTAR', 'BRACE', 'GLOBTILDE'])
+    title: str = 'Files'
     icu_locale: str | None = None
     icu_strength: int = icu.Collator.PRIMARY
 
@@ -34,6 +35,9 @@ class FileMode(PathMode):
     def __init__(self, config: FileModeConfig) -> None:
         super().__init__()
         self.config = config
+
+    def get_title(self) -> str:
+        return self.config.title
 
     @override
     def get_collator(self) -> PathCollator:

@@ -7,12 +7,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## Unreleased
 
+### Additions
+
+* Allow customizing the displayed FileMode title.
+
 ### Changes
 
 * Use meson to build the C code.
 * Refactor the CLI commands.
 * Implement a custom access journal that wraps Gtk.RecentManager.
 * Reimplement the mode configuration from scratch.
+* Separate the mode's name (used to identify and invoke it) from its displayed title.
 
 ### Removals
 
