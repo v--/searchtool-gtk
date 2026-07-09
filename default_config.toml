@@ -2,25 +2,19 @@
 
 [modes.binary]
 class = "searchtool_gtk.modes.BinMode"
-
-# # Optional config
-# [modes.binary.param]
 # stdout =  # Override the subprocess stream modes; can be "INHERIT" or "DEVNULL"
 # stderr =  # Ditto
 
-# # The FileMode is commented out by default because it has a mandatory "glob" config (see below)
+# # The FileMode is commented out by default because it has a mandatory "patterns" config which cannot be set universally
 # [modes.file]
 # class = "searchtool_gtk.modes.FileMode"
-
-# [modes.file.param]
 # patterns = [
 #   "~/Documents/*.pdf",
 # ]
-# use_wcmatch = true  # Use wcmatch for glob matching
 # wcmatch_flags = ["NEGATE", "GLOBSTAR", "BRACE", "GLOBTILDE"]  # The default wcmatch flags we use
 # icu_locale =  # Optional ICU locale
 # icu_strength =  # Optional strength of matching strings; lower is looser
 
-# # The ClipHistMode is also commented out by default, but can easily be re-enabled
+# # The ClipHistMode accepts no options and "just works" if enabled
 # [modes.clipboard]
 # class = "searchtool_gtk.modes.ClipHistMode"

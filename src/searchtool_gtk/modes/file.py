@@ -1,10 +1,8 @@
-import os.path
 import pathlib
 import subprocess
 import warnings
-from collections.abc import Iterable, Iterator, Sequence
-from glob import iglob
-from typing import Self, override
+from collections.abc import Iterable, Sequence
+from typing import override
 
 import icu
 import msgspec
@@ -12,7 +10,7 @@ import wcmatch.glob
 from gi.repository import Gtk
 
 from searchtool_gtk.collation import PathCollator, StringCollator
-from searchtool_gtk.exceptions import SearchToolDeprecationWarning, SearchToolIntegrityError, SearchToolValidationError
+from searchtool_gtk.exceptions import SearchToolValidationError
 from searchtool_gtk.support.iteration import list_accumulator
 
 from .path import PathMode
@@ -24,40 +22,16 @@ def validate_wcmatch_flags(flags: Sequence[str]) -> None:
             raise SearchToolValidationError(f'Unrecognized wcmatch glob flag {f}')
 
 
-class LegacyFileModePattern(msgspec.Struct, forbid_unknown_fields=True):
-    glob: str
-    include_hidden: bool = False
-    recursive: bool = False
-
-
 class FileModeConfig(msgspec.Struct, forbid_unknown_fields=True):
-    patterns: Sequence[str | LegacyFileModePattern]
-    use_wcmatch: bool
+    patterns: Sequence[str]
     wcmatch_flags: Sequence[str] = msgspec.field(default_factory=lambda: ['NEGATE', 'GLOBSTAR', 'BRACE', 'GLOBTILDE'])
     icu_locale: str | None = None
     icu_strength: int = icu.Collator.PRIMARY
 
 
 class FileMode(PathMode[pathlib.Path]):
+    __searchtool_config_type__ = FileModeConfig
     config: FileModeConfig
-
-    @classmethod
-    def from_config(cls, param: object) -> Self:
-        config = msgspec.convert(param or {}, type=FileModeConfig)
-
-        if config.use_wcmatch:
-            validate_wcmatch_flags(config.wcmatch_flags)
-
-            for pattern in config.patterns:
-                if isinstance(pattern, LegacyFileModePattern):
-                    raise SearchToolValidationError('Invalid legacy object-based pattern for wcmatch')
-        else:
-            warnings.warn(
-                SearchToolDeprecationWarning('stdlib globs are deprecated; consider enabling `use_wcmatch`'),
-                stacklevel=2,
-            )
-
-        return cls(config)
 
     def __init__(self, config: FileModeConfig) -> None:
         self.config = config
@@ -73,26 +47,10 @@ class FileMode(PathMode[pathlib.Path]):
     @override
     @list_accumulator
     def fetch_items(self) -> Iterable[pathlib.Path]:
-        for pattern in self.config.patterns:
-            it: Iterator[str]
+        flags = sum(getattr(wcmatch.glob, f) for f in self.config.wcmatch_flags)
 
-            if isinstance(pattern, LegacyFileModePattern):
-                if self.config.use_wcmatch:
-                    raise SearchToolIntegrityError('Invalid legacy object-based pattern for wcmatch')
-
-                it = iglob(
-                    pathname=os.path.expanduser(pattern.glob),
-                    recursive=pattern.recursive,
-                    include_hidden=pattern.include_hidden,
-                )
-            elif self.config.use_wcmatch:
-                flags = sum(getattr(wcmatch.glob, f) for f in self.config.wcmatch_flags)
-                it = wcmatch.glob.iglob(pattern, flags=flags)
-            else:
-                it = iglob(pathname=os.path.expanduser(pattern))
-
-            for path in it:
-                yield pathlib.Path(path)
+        for path in wcmatch.glob.iglob(self.config.patterns, flags=flags):
+            yield pathlib.Path(path)
 
     @override
     def activate_item(self, item: pathlib.Path) -> None:

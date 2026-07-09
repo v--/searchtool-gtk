@@ -1,122 +1,78 @@
-import contextlib
 import importlib
-import json
 import tomllib
-import warnings
-from collections.abc import Hashable, Mapping, Sequence
-from typing import TYPE_CHECKING, Any
+from collections.abc import Hashable, Mapping
 
 import msgspec
-import platformdirs
+from platformdirs import PlatformDirs
 
-from .exceptions import SearchToolDeprecationWarning, SearchToolValidationError
+from .exceptions import SearchToolValidationError
 from .modes import SearchToolMode
-
-
-if TYPE_CHECKING:
-    import pathlib
-
-
-class LegacySearchToolModeConfig(msgspec.Struct, forbid_unknown_fields=True):
-    name: str
-    class_fqn: str = msgspec.field(name='class')
-    param: Any = None
-
-
-class LegacySearchToolConfig(msgspec.Struct, forbid_unknown_fields=True):
-    modes: Sequence[LegacySearchToolModeConfig]
-
-
-class SearchToolModeConfig(msgspec.Struct, forbid_unknown_fields=True):
-    class_fqn: str = msgspec.field(name='class')
-    param: Any = None
-
-
-class SearchToolConfig(msgspec.Struct, forbid_unknown_fields=True):
-    modes: Mapping[str, SearchToolModeConfig]
 
 
 ModeMapping = Mapping[str, SearchToolMode[Hashable]]
 
 
 # ruff: ignore[complex-structure]
-def build_modes_from_config_file() -> ModeMapping:
+def load_modes_from_config_file() -> ModeMapping:
+    dirs = PlatformDirs('searchtool', appauthor=False)
     raw_config: Mapping[str, Hashable] | None = None
-    config_path: pathlib.Path | None = None
 
-    for config_dir in [platformdirs.site_config_path(), platformdirs.user_config_path()]:
-        toml_config_path = config_dir / 'searchtool.toml'
-        json_config_path = config_dir / 'searchtool.json'
+    for config_dir in dirs.iter_config_paths():
+        toml_config_path = config_dir / 'config.toml'
 
-        if toml_config_path:
-            try:
-                with open(toml_config_path, 'rb') as file:
-                    raw_config = tomllib.load(file)
-            except FileNotFoundError:
-                pass
-            except tomllib.TOMLDecodeError as err:
-                raise SearchToolValidationError(f'Cannot decode {toml_config_path!r}') from err
-            else:
-                config_path = toml_config_path
-
-        if raw_config is None and json_config_path:
-            try:
-                with open(json_config_path, encoding='utf-8') as file:
-                    raw_config = json.load(file)
-            except FileNotFoundError:
-                pass
-            except json.JSONDecodeError as err:
-                raise SearchToolValidationError(f'Cannot decode {json_config_path!r}') from err
-            else:
-                config_path = json_config_path
-                warnings.warn(
-                    SearchToolDeprecationWarning('JSON configurations are deprecated; consider using searchtool.toml'),
-                    stacklevel=2,
-                )
+        try:
+            with open(toml_config_path, 'rb') as file:
+                raw_config = tomllib.load(file)
+        except FileNotFoundError:
+            pass
+        except tomllib.TOMLDecodeError as err:
+            raise SearchToolValidationError(f'Cannot decode {toml_config_path!r}') from err
+        else:
+            config_path = toml_config_path
+            break
 
     if raw_config is None:
-        raise SearchToolValidationError('Cannot find either searchtool.toml or searchtool.json')
+        raise SearchToolValidationError('Cannot find a configuration for searchtool')
 
-    config: SearchToolConfig | None = None
-    legacy_config: LegacySearchToolConfig | None = None
+    modes_raw = raw_config.get('modes')
 
-    with contextlib.suppress(msgspec.ValidationError):
-        legacy_config = msgspec.convert(raw_config, type=LegacySearchToolConfig)
+    if not isinstance(modes_raw, dict):
+        raise SearchToolValidationError(f"The config at {config_path} must have a 'modes' table.")
 
-    if legacy_config:
-        warnings.warn(
-            SearchToolDeprecationWarning('Legacy "flat" configuration format detected. Consider using tables with modes as names.'),
-            stacklevel=2,
-        )
+    modes: dict[str, SearchToolMode[Hashable]] = {}
 
-        config = SearchToolConfig(
-            modes={
-                mc.name: SearchToolModeConfig(mc.class_fqn, mc.param) for mc in legacy_config.modes
-            },
-        )
+    for mode_name, mode_config_raw in modes_raw.items():
+        if not isinstance(mode_config_raw, dict):
+            raise SearchToolValidationError(f'The configuration for mode {mode_name!r} must be a table.')
 
-    if config is None:
-        try:
-            config = msgspec.convert(raw_config, type=SearchToolConfig)
-        except msgspec.ValidationError as err:
-            raise SearchToolValidationError(f'Invalid config in {config_path}') from err
+        class_fqn = mode_config_raw.pop('class', None)
 
-    result: dict[str, SearchToolMode[Hashable]] = {}
+        if not isinstance(class_fqn, str):
+            raise SearchToolValidationError(f"The 'class' property in the configuration for mode {mode_name!r} must be a string.")
 
-    for mode_name, mode_config in config.modes.items():
-        module_name, _, class_name = mode_config.class_fqn.rpartition('.')
+        module_name, _, class_name = class_fqn.rpartition('.')
 
         try:
             mode_class = getattr(importlib.import_module(module_name), class_name)
         except (ImportError, AttributeError) as err:
-            raise SearchToolValidationError(f'Cannot import class {mode_config.class_fqn} required by mode {mode_name!r}') from err
+            raise SearchToolValidationError(f'Cannot import class {class_fqn} required by mode {mode_name!r}') from err
 
         if not issubclass(mode_class, SearchToolMode):
-            raise SearchToolValidationError(f'The class {mode_config.class_fqn} required by mode {mode_name!r} does not satisfy the <SearchToolMode> protocol')
+            raise SearchToolValidationError(f'The class {class_fqn} required by mode {mode_name!r} does not satisfy the SearchToolMode protocol')
+
+        config_class = getattr(mode_class, '__searchtool_config_type__', None)
+
+        if config_class is None:
+            raise SearchToolValidationError(f'The class {class_fqn} required by mode {mode_name!r} has no __searchtool_config_type__')
 
         try:
-            result[mode_name] = mode_class.from_config(mode_config.param)
+            mode_config = msgspec.convert(mode_config_raw, type=config_class)
+        except Exception as err:
+            raise SearchToolValidationError(f'Could not load config for {mode_name!r}') from err
+
+        try:
+            modes[mode_name] = mode_class(mode_config)
         except Exception as err:
             raise SearchToolValidationError(f'Could not initialize mode for {mode_name!r}') from err
 
-    return result
+    return modes

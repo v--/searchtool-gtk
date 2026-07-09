@@ -5,7 +5,7 @@ import subprocess
 import warnings
 from collections.abc import Iterable, Sequence
 from enum import StrEnum
-from typing import Self, override
+from typing import override
 
 import msgspec
 from gi.repository import Gtk
@@ -34,13 +34,11 @@ class BinModeConfig(msgspec.Struct, forbid_unknown_fields=True):
 
 
 class BinMode(PathMode[pathlib.Path]):
-    dirs: Sequence[pathlib.Path]
-    recent: Gtk.RecentManager
+    __searchtool_config_type__ = BinModeConfig
     config: BinModeConfig
 
-    @classmethod
-    def from_config(cls, param: object) -> Self:
-        return cls(msgspec.convert(param or {}, type=BinModeConfig))
+    dirs: Sequence[pathlib.Path]
+    recent: Gtk.RecentManager
 
     def __init__(self, config: BinModeConfig) -> None:
         self.dirs = [pathlib.Path(d) for d in os.environ['PATH'].split(':')]

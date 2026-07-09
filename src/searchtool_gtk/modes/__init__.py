@@ -1,4 +1,4 @@
-from .base import SearchToolMode
+from .base import SearchToolMode, SearchToolModeConfig
 from .bin import BinMode
 from .cliphist import ClipHistMode
 from .file import FileMode

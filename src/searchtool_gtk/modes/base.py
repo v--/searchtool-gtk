@@ -1,15 +1,17 @@
 from collections.abc import Hashable, Sequence
-from typing import Protocol, Self, runtime_checkable
+from typing import Protocol, runtime_checkable
+
+import msgspec
 
 from searchtool_gtk.collation import SearchToolCollator
 
 
+class SearchToolModeConfig(msgspec.Struct):
+    class_fqn: str = msgspec.field(name='class')
+
+
 @runtime_checkable
 class SearchToolMode[SearchItem: Hashable](Protocol):
-    @classmethod
-    def from_config(cls, param: object) -> Self:
-        ...
-
     def get_collator(self) -> SearchToolCollator[SearchItem]:
         ...
 

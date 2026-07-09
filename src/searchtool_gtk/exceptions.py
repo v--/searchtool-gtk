@@ -12,11 +12,3 @@ class SearchToolIntegrityError(SearchToolError):
 
 class SearchToolValidationError(SearchToolError):
     """An error class for user errors."""
-
-
-class SearchToolWarning(Warning):
-    pass
-
-
-class SearchToolDeprecationWarning(DeprecationWarning, SearchToolWarning):
-    pass

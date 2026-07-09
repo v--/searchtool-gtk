@@ -9,7 +9,7 @@ path = [
   "pyproject.toml",
   "README.md",
   "REUSE.toml",
-  "searchtool.toml",
+  "default_config.toml",
   "src/**.c",
   "src/**.py",
 ]

@@ -24,9 +24,9 @@ Each mode is determined by a name and a fully qualified Python class name, so cr
 * [`PipeMode`](./src/searchtool_gtk/modes/pipe.py): Allows manually specifying the options; `bin/searchtool-gtk-dmenu` provides a dmenu-like interface via this mode (see below).
 * [`ClipHistMode`](./src/searchtool_gtk/modes/cliphist.py): A mode specifically adapted for [ClipHist](https://github.com/sentriz/cliphist).
 
-Launching the tool is done by simply launching `searchtool-gtk-server`.
+Launching the tool is done by simply running `searchtool-gtk-server`.
 
-Given the [default configuration](./searchtool.toml), we can launch the "binary" mode as follows:
+Given the [default configuration](./default_config.toml), we can launch the "binary" mode as follows:
 
     searchtool-gtk-activate binary
 
@@ -56,12 +56,6 @@ An alternative is to use [`uv`](https://docs.astral.sh/uv/):
 
     uv tool install searchtool-gtk --from git+https://github.com/v--/searchtool-gtk
 
-Other tools like [`pipx`](https://pipx.pypa.io/) can also be used - simply run the following from the cloned repository:
-
-    uv sync
-    uv build --wheel
-    pipx install --include-deps dist/*.whl
-
 The hard prerequisites are a supported version of Python and GTK4.
 
 For performance reasons, the package also provides native counterparts to the Python scripts `searchtook-gtk-activate` and `searchtook-gtk-dmenu`. Using them requires cloning the repository and building from source:
@@ -75,7 +69,7 @@ For performance reasons, the package also provides native counterparts to the Py
 
 ## Configuration
 
-We use the [XDG config directories](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) (the defaults should be `/etc/xdg` or `~/.config`) to search for a user configuration file named `searchtool.toml`. The format should be clear from [`searchtool.toml.example`](./searchtool.toml).
+We use the [XDG config directories](https://specifications.freedesktop.org/basedir-spec/basedir-spec-latest.html) (the defaults should be `/etc/xdg` or `~/.config`) to search for a directory `searchtool` with a configuration file named `config.toml`. The format should be clear from [`default_config.toml`](./default_config.toml).
 
 ## Motivation
 
