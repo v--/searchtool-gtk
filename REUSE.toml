@@ -21,7 +21,7 @@ SPDX-License-Identifier = "Unlicense"
 # https://reuse.software/faq/#exclude-file
 [[annotations]]
 path = [
-  "screenshot.png",
+  "screenshots/*.png",
   "uv.lock",
 ]
 SPDX-FileCopyrightText = "NONE"
