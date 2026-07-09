@@ -1,2 +1,2 @@
-from .basic import basic_client
-from .dmenu import dmenu_client
+from .activate import activate, activate_cli
+from .dmenu import dmenu, dmenu_cli

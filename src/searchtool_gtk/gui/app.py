@@ -43,15 +43,6 @@ class SearchToolApp(Adw.Application):
         self.set_accels_for_action('win.submit', ['Return'])
 
     @override
-    def run(self, args: list[str] | None) -> int:
-        exit_status = super().run(args)
-
-        if exit_status > 0:
-            raise SystemExit(exit_status)
-
-        return 0
-
-    @override
     def do_activate(self) -> None:
         self.windows = {
             name: SearchToolWindow(self, name, mode) for name, mode in self.modes.items()

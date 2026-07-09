@@ -1,14 +1,11 @@
 import sys
-import warnings
 
 from .config import load_modes_from_config_file
 from .exceptions import SearchToolValidationError
 from .gui import SearchToolApp
 
 
-def entry_point() -> None:
-    warnings.simplefilter('always')
-
+def server_cli() -> int:
     try:
         config_items = load_modes_from_config_file()
     except SearchToolValidationError as err:
@@ -18,4 +15,4 @@ def entry_point() -> None:
         raise SystemExit(f'Error: {err}.') from err
 
     app = SearchToolApp(config_items)
-    app.run(sys.argv)
+    return app.run(sys.argv)

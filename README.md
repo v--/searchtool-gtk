@@ -2,7 +2,7 @@
 
 [![AUR Package](https://img.shields.io/aur/version/searchtool-gtk)](https://aur.archlinux.org/packages/searchtool-gtk)
 
-This is a generic GTK search tool and launcher. It runs as a background server and is activated via D-Bus as well as several client wrappers.
+This is a generic GTK search tool and launcher. It runs as a background server and is activated via [D-Bus](https://www.freedesktop.org/wiki/Software/dbus/) as well as client wrappers provided by the project.
 
 ## Table of contents
 
@@ -58,7 +58,7 @@ An alternative is to use [`uv`](https://docs.astral.sh/uv/):
 
 The hard prerequisites are a supported version of Python and GTK4.
 
-For performance reasons, the package also provides native counterparts to the Python scripts `searchtook-gtk-activate` and `searchtook-gtk-dmenu`. Using them requires cloning the repository and building from source:
+To shave a hundred-or-so milliseconds from every invocation of `searchtool-gtk-{activate,dmenu}`, this project also provides native counterparts. Using them requires cloning the repository and building from source:
 
     make build-c
     install -D -m755 dist/searchtool-gtk-activate "$dest/searchtool-gtk-activate"
