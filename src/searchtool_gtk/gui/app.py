@@ -4,7 +4,6 @@ from typing import override
 from gi.repository import Adw, Gio, GLib
 
 from searchtool_gtk.config import ModeMapping
-from searchtool_gtk.exceptions import SearchToolValidationError
 
 from .window import SearchToolWindow
 
@@ -48,20 +47,13 @@ class SearchToolApp(Adw.Application):
             name: SearchToolWindow(self, mode) for name, mode in self.modes.items()
         }
 
-        conn = self.get_dbus_connection()
-
-        if conn is None:
-            return
-
-        # Based on https://github.com/rhinstaller/dasbus/blob/be51b94b083bad6fa0716ad6dc97d12f4462f8d4/src/dasbus/server/handler.py#L60
-        for interface in Gio.DBusNodeInfo.new_for_xml(DBUS_INTERFACE).interfaces:
-            conn.register_object_with_closures2(
-                object_path='/net/ivasilev/SearchToolGTK',
-                interface_info=interface,
-                method_call_closure=self.dbus_callback,
-                get_property_closure=None,
-                set_property_closure=None,
-            )
+        if conn := self.get_dbus_connection():
+            for interface in Gio.DBusNodeInfo.new_for_xml(DBUS_INTERFACE).interfaces:
+                conn.register_object_with_closures2(
+                    object_path='/net/ivasilev/SearchToolGTK',
+                    interface_info=interface,
+                    method_call_closure=self.dbus_callback,
+                )
 
     def dbus_callback(
         self,
@@ -90,7 +82,6 @@ class SearchToolApp(Adw.Application):
 
                 if hasattr(window.mode, 'handle_dbus_input'):
                     window.mode.handle_dbus_input(mode_name, invocation, items)
+                    window.activate()
                 else:
-                    raise SearchToolValidationError(f'Mode {mode_name} cannot handle D-Bus input')
-
-                window.activate()
+                    invocation.return_dbus_error('net.ivasilev.SearchToolGTK.InvalidModeError', f'Mode with name {mode_name!r} cannot handle D-Bus input')
