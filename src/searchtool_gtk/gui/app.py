@@ -73,16 +73,15 @@ class SearchToolApp(Adw.Application):
             )
 
     def dbus_callback(
-            self,
-            connection: Gio.DBusConnection,
-            sender: str,
-            object_path: str,
-            interface_name: str,
-            method_name: str,
-            params: GLib.Variant,
-            invocation: Gio.DBusMethodInvocation,
-        ) -> None:
-
+        self,
+        connection: Gio.DBusConnection,
+        sender: str,
+        object_path: str,
+        interface_name: str,
+        method_name: str,
+        params: GLib.Variant,
+        invocation: Gio.DBusMethodInvocation,
+    ) -> None:
         mode_name: str = params[0]
         window = self.windows.get(mode_name)
 
