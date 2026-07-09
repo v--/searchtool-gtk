@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changes
 
+* Implement a custom access journal that wraps Gtk.RecentManager.
 * Reimplement the mode configuration from scratch.
 
 ## 2.5.0 - 2026-07-08

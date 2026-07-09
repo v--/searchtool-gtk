@@ -40,11 +40,6 @@ class PipeMode[SearchItem: Hashable](SearchToolMode[SearchItem]):
         except NotImplementedError as err:
             raise SearchToolValidationError(f'Mode {mode_name} cannot digest D-Bus input') from err
 
-    # Items should be bumped by whatever piped them
-    @override
-    def bump_item(self, item: SearchItem) -> None:
-        pass
-
     @override
     def activate_item(self, item: SearchItem) -> None:
         if self.invocation is not None:

@@ -25,7 +25,7 @@ class SearchToolMode[SearchItem: Hashable](Protocol):
         ...
 
     # Record that the item has been selected
-    def bump_item(self, item: SearchItem) -> None:
+    def log_access(self, item: SearchItem) -> None:
         ...
 
     def activate_item(self, item: SearchItem) -> None:

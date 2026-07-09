@@ -7,7 +7,6 @@ from typing import override
 import icu
 import msgspec
 import wcmatch.glob
-from gi.repository import Gtk
 
 from searchtool_gtk.collation import PathCollator, StringCollator
 from searchtool_gtk.exceptions import SearchToolValidationError
@@ -29,18 +28,18 @@ class FileModeConfig(msgspec.Struct, forbid_unknown_fields=True):
     icu_strength: int = icu.Collator.PRIMARY
 
 
-class FileMode(PathMode[pathlib.Path]):
+class FileMode(PathMode):
     __searchtool_config_type__ = FileModeConfig
     config: FileModeConfig
 
     def __init__(self, config: FileModeConfig) -> None:
+        super().__init__()
         self.config = config
-        self.recent = Gtk.RecentManager()
 
     @override
     def get_collator(self) -> PathCollator:
         return PathCollator(
-            self.recent,
+            self.journal,
             StringCollator(self.config.icu_locale, self.config.icu_strength),
         )
 
@@ -61,3 +60,5 @@ class FileMode(PathMode[pathlib.Path]):
                 stderr=subprocess.DEVNULL,
                 start_new_session=True,
             )
+
+        self.journal.log_access(item)

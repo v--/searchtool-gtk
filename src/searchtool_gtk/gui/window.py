@@ -59,7 +59,6 @@ class SearchToolWindow[SearchItem: Hashable](Adw.ApplicationWindow):
         self.minimize()
 
         if selection is not None:
-            self.mode.bump_item(selection)
             self.mode.activate_item(selection)
             self.content.update_sorter()
 

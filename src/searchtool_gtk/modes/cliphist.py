@@ -33,6 +33,7 @@ class ClipHistMode(PipeMode[ClipHistItem]):
     def digest_dbus_input(self, items: Sequence[str]) -> None:
         self.items = list(iter_cliphist_items(items))
 
+    # We ignore the journal because access should be logger by cliphist
     def __init__(self, config: ClipHistModeConfig) -> None:
         super().__init__()
         self.config = config

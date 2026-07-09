@@ -8,7 +8,6 @@ from enum import StrEnum
 from typing import override
 
 import msgspec
-from gi.repository import Gtk
 
 from searchtool_gtk.support.iteration import list_accumulator
 
@@ -33,17 +32,16 @@ class BinModeConfig(msgspec.Struct, forbid_unknown_fields=True):
     stderr: BinModeStreamOption = BinModeStreamOption.DEVNULL
 
 
-class BinMode(PathMode[pathlib.Path]):
+class BinMode(PathMode):
     __searchtool_config_type__ = BinModeConfig
-    config: BinModeConfig
 
+    config: BinModeConfig
     dirs: Sequence[pathlib.Path]
-    recent: Gtk.RecentManager
 
     def __init__(self, config: BinModeConfig) -> None:
-        self.dirs = [pathlib.Path(d) for d in os.environ['PATH'].split(':')]
-        self.recent = Gtk.RecentManager()
+        super().__init__()
         self.config = config
+        self.dirs = [pathlib.Path(d) for d in os.environ['PATH'].split(':')]
 
     @override
     @list_accumulator
@@ -61,3 +59,6 @@ class BinMode(PathMode[pathlib.Path]):
                 stderr=self.config.stderr.get_descriptor(),
                 start_new_session=True,
             )
+
+        self.journal.log_access(item)
+        print(item, self.journal.get_last_access(item))
