@@ -5,5 +5,8 @@ __pycache__
 .mypy_cache
 .venv
 
-# Builds
+# Python build directory
 /dist
+
+# Meson build directory
+/builddir

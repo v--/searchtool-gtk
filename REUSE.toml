@@ -2,10 +2,11 @@ version = 1
 
 [[annotations]]
 path = [
+  ".clang-tidy",
   ".gitignore",
   ".python-version",
   "CHANGELOG.md",
-  "Makefile",
+  "meson.build",
   "pyproject.toml",
   "README.md",
   "REUSE.toml",

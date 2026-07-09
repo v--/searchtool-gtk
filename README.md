@@ -58,11 +58,10 @@ An alternative is to use [`uv`](https://docs.astral.sh/uv/):
 
 The hard prerequisites are a supported version of Python and GTK4.
 
-To shave a hundred-or-so milliseconds from every invocation of `searchtool-gtk-{activate,dmenu}`, this project also provides native counterparts. Using them requires cloning the repository and building from source:
+To shave a hundred-or-so milliseconds from every invocation of `searchtool-gtk-{activate,dmenu}`, this project also provides native counterparts. They can be installed to `$dest/bin` via [Meson](https://mesonbuild.com/):
 
-    make build-c
-    install -D -m755 dist/searchtool-gtk-activate "$dest/searchtool-gtk-activate"
-    install -D -m755 dist/searchtool-gtk-dmenu "$dest/searchtool-gtk-dmenu"
+    meson setup builddir --prefix=$dest
+    meson install -C builddir
 
 > [!TIP]
 > An [AUR package](https://aur.archlinux.org/packages/searchtool-gtk) is available for reference. If you are packaging this for some other package manager, consider using PEP-517 tools as shown in [this PKGBUILD file](https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=searchtool-gtk).

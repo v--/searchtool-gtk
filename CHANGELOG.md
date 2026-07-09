@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changes
 
+* Use meson to build the C code.
 * Refactor the CLI commands.
 * Implement a custom access journal that wraps Gtk.RecentManager.
 * Reimplement the mode configuration from scratch.
