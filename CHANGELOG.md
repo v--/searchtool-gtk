@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Implement a custom access journal that wraps Gtk.RecentManager.
 * Reimplement the mode configuration from scratch.
 * Separate the mode's name (used to identify and invoke it) from its displayed title.
+* Revise the styling.
 
 ### Removals
 

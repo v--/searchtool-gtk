@@ -2,6 +2,17 @@ from gi.repository import Gdk, Gtk
 
 
 CSS = """
+scrolledwindow.scroll-box {
+  min-width: 600px;
+  min-height: 400px;
+}
+
+entry.input {
+  min-width: 600px;
+  background: none;
+  outline: none;
+}
+
 label.secondary {
   opacity: 0.5;
 }

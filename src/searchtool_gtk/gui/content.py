@@ -7,11 +7,6 @@ from searchtool_gtk.modes import SearchToolMode
 from .column_view import SearchToolColumnView
 
 
-GUI_WIDTH = 800
-GUI_HEIGHT = 400
-GUI_SPACING = 20
-
-
 class SearchToolContent[SearchItem: Hashable](Gtk.Box):
     scroll_box: Gtk.ScrolledWindow
     outer_box: Gtk.Box
@@ -29,16 +24,14 @@ class SearchToolContent[SearchItem: Hashable](Gtk.Box):
         self.outer_box.set_orientation(Gtk.Orientation.VERTICAL)
         self.append(self.outer_box)
 
-        self.input_widget = Gtk.Entry()
+        self.input_widget = Gtk.Entry(css_classes=['input'])
         self.input_widget.connect('changed', self.on_input)
 
         self.search_bar = Gtk.SearchBar(search_mode_enabled=True)
         self.search_bar.set_child(self.input_widget)
         self.outer_box.append(self.search_bar)
 
-        self.scroll_box = Gtk.ScrolledWindow()
-        self.scroll_box.set_min_content_width(GUI_WIDTH)
-        self.scroll_box.set_min_content_height(GUI_HEIGHT)
+        self.scroll_box = Gtk.ScrolledWindow(css_classes=['scroll-box'])
         self.outer_box.append(self.scroll_box)
 
         self.column_view = SearchToolColumnView(mode)
