@@ -4,43 +4,18 @@ import pathlib
 import subprocess
 import warnings
 from collections.abc import Iterable, Sequence
-from enum import StrEnum
 from typing import override
-
-import msgspec
 
 from searchtool_gtk.support.iteration import list_accumulator
 
 from .path import PathMode
 
 
-class BinModeStreamOption(StrEnum):
-    DEVNULL = 'DEVNULL'
-    INHERIT = 'INHERIT'
-
-    def get_descriptor(self) -> int | None:
-        match self:
-            case BinModeStreamOption.INHERIT:
-                return None
-
-            case BinModeStreamOption.DEVNULL:
-                return subprocess.DEVNULL
-
-
-class BinModeConfig(msgspec.Struct, forbid_unknown_fields=True):
-    stdout: BinModeStreamOption = BinModeStreamOption.DEVNULL
-    stderr: BinModeStreamOption = BinModeStreamOption.DEVNULL
-
-
 class BinMode(PathMode):
-    __searchtool_config_type__ = BinModeConfig
-
-    config: BinModeConfig
     dirs: Sequence[pathlib.Path]
 
-    def __init__(self, config: BinModeConfig) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.config = config
         self.dirs = [pathlib.Path(d) for d in os.environ['PATH'].split(':')]
 
     @override
@@ -53,12 +28,7 @@ class BinMode(PathMode):
     @override
     def activate_item(self, item: pathlib.Path) -> None:
         with warnings.catch_warnings(category=ResourceWarning, record=True):
-            subprocess.Popen(
-                item.as_posix(),
-                stdout=self.config.stdout.get_descriptor(),
-                stderr=self.config.stderr.get_descriptor(),
-                start_new_session=True,
-            )
+            subprocess.Popen(item.as_posix(), start_new_session=True)
 
         self.journal.log_access(item)
         print(item, self.journal.get_last_access(item))

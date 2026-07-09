@@ -1,6 +1,7 @@
 import importlib
 import tomllib
 from collections.abc import Hashable, Mapping
+from typing import Any
 
 import msgspec
 from platformdirs import PlatformDirs
@@ -60,18 +61,16 @@ def load_modes_from_config_file() -> ModeMapping:
         if not issubclass(mode_class, SearchToolMode):
             raise SearchToolValidationError(f'The class {class_fqn} required by mode {mode_name!r} does not satisfy the SearchToolMode protocol')
 
-        config_class = getattr(mode_class, '__searchtool_config_type__', None)
+        mode_kwargs = dict[str, Any]()
 
-        if config_class is None:
-            raise SearchToolValidationError(f'The class {class_fqn} required by mode {mode_name!r} has no __searchtool_config_type__')
-
-        try:
-            mode_config = msgspec.convert(mode_config_raw, type=config_class)
-        except Exception as err:
-            raise SearchToolValidationError(f'Could not load config for {mode_name!r}') from err
+        if config_class := getattr(mode_class, '__searchtool_config_type__', None):
+            try:
+                mode_kwargs['config'] = msgspec.convert(mode_config_raw, type=config_class)
+            except Exception as err:
+                raise SearchToolValidationError(f'Could not load config for {mode_name!r}') from err
 
         try:
-            modes[mode_name] = mode_class(mode_config)
+            modes[mode_name] = mode_class(**mode_kwargs)
         except Exception as err:
             raise SearchToolValidationError(f'Could not initialize mode for {mode_name!r}') from err
 

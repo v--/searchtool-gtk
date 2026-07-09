@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 * Implement a custom access journal that wraps Gtk.RecentManager.
 * Reimplement the mode configuration from scratch.
 
+### Removals
+
+* Disable customization of BinMode's subprocess pipes.
+
 ## 2.5.0 - 2026-07-08
 
 * Improve mode typing and mode construction.

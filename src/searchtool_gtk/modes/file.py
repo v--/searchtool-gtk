@@ -54,11 +54,6 @@ class FileMode(PathMode):
     @override
     def activate_item(self, item: pathlib.Path) -> None:
         with warnings.catch_warnings(category=ResourceWarning, record=True):
-            subprocess.Popen(
-                ['xdg-open', item.as_posix()],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL,
-                start_new_session=True,
-            )
+            subprocess.Popen(['xdg-open', item.as_posix()], start_new_session=True)
 
         self.journal.log_access(item)
