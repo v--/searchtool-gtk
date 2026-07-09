@@ -12,6 +12,9 @@ DBUS_INTERFACE = """<node>
   <error name="net.ivasilev.SearchToolGTK.InvalidModeError">
   </error>
 
+  <error name="net.ivasilev.SearchToolGTK.LockError">
+  </error>
+
   <interface name="net.ivasilev.SearchToolGTK">
     <method name="Activate">
       <arg direction="in" name="name" type="s"/>

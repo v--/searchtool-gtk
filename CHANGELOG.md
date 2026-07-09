@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Additions
 
 * Allow customizing the displayed FileMode title.
+* Add a safety lock to avoid double-triggering the same mode.
 
 ### Changes
 

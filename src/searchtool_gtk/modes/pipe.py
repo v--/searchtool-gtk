@@ -33,6 +33,10 @@ class PipeMode[SearchItem: Hashable](SearchToolMode[SearchItem]):
         raise NotImplementedError
 
     def handle_dbus_input(self, mode_name: str, invocation: Gio.DBusMethodInvocation, items: Sequence[str]) -> None:
+        if self.invocation:
+            invocation.return_dbus_error('net.ivasilev.SearchToolGTK.LockError', 'Another invocation is already processing')
+            return
+
         self.invocation = invocation
 
         try:
@@ -42,7 +46,7 @@ class PipeMode[SearchItem: Hashable](SearchToolMode[SearchItem]):
 
     @override
     def activate_item(self, item: SearchItem) -> None:
-        if self.invocation is not None:
+        if self.invocation:
             self.invocation.return_value(
                 GLib.Variant('(bs)', [True, str(item)]),
             )
@@ -51,7 +55,7 @@ class PipeMode[SearchItem: Hashable](SearchToolMode[SearchItem]):
 
     @override
     def handle_selection_cancellation(self) -> None:
-        if self.invocation is not None:
+        if self.invocation:
             self.invocation.return_value(
                 GLib.Variant('(bs)', [False, '']),
             )
