@@ -1,4 +1,4 @@
-from collections.abc import Hashable, Sequence
+from collections.abc import Hashable
 from typing import TYPE_CHECKING, override
 
 from gi.repository import Gio, GLib, GObject, Gtk
@@ -56,12 +56,9 @@ class SearchToolColumnView[SearchItem: Hashable](Gtk.ColumnView):
     sorter: SearchToolSorter[SearchItem]
     sort_model: Gtk.SortListModel
     selection: Gtk.SingleSelection
-
-    cached_items: Sequence[SearchItem]
     mode: SearchToolMode[SearchItem]
 
     def __init__(self, mode: SearchToolMode[SearchItem]) -> None:
-        self.cached_items = []
         self.mode = mode
 
         self.store = Gio.ListStore()
@@ -112,7 +109,7 @@ class SearchToolColumnView[SearchItem: Hashable](Gtk.ColumnView):
         self.filter_model.set_filter(SearchToolFilter(self.mode, text) if text is not None else None)
 
     def scroll_to_current(self) -> None:
-        if len(self.cached_items) > 0:
+        if len(self.store) > 0:
             self.scroll_to(
                 pos=self.selection.get_selected() or 0,
                 column=None,
@@ -157,23 +154,24 @@ class SearchToolColumnView[SearchItem: Hashable](Gtk.ColumnView):
         self.scroll_to_current()
 
     def refresh_options(self) -> None:
-        existing = {item: i for i, item in enumerate(self.cached_items)}
-        to_be_removed = set(existing.values())
         new_items = self.mode.fetch_items()
+        to_add = set(new_items)
+        removed_count = 0
 
-        for item in new_items:
+        for i, entry in enumerate(list(self.store)):
             try:
-                index = existing[item]
+                to_add.remove(entry.si)
             except KeyError:
-                self.store.append(SearchToolEntity(item))
-            else:
-                to_be_removed.remove(index)
+                if entry != self.store[i - removed_count]:
+                    raise SearchToolIntegrityError('Index mismatch while updating option list') from None
 
-        for i in to_be_removed:
-            self.store.remove(i)
+                self.store.remove(i - removed_count)
+                removed_count += 1
 
-        self.cached_items = new_items
-        self.scroll_to_current()
+        for item in to_add:
+            self.store.append(SearchToolEntity(item))
+
+        self.select_first()
 
     def get_selected(self) -> SearchItem | None:
         entity = self.selection.get_selected_item()
