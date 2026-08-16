@@ -11,6 +11,7 @@ from gi.repository import Gio, GLib
 from searchtool_gtk.exceptions import SearchToolIntegrityError
 
 
+# We have not initialized GTK yet. We only import "Gtk" for type hints.
 if TYPE_CHECKING:
     from gi.repository import Gtk
 
@@ -43,8 +44,11 @@ class SearchToolAccessJournal[SearchToolItem: Hashable]:
             raise SearchToolIntegrityError('The GTK recent manager only supports files')
 
         with contextlib.suppress(GLib.GError):
-            if info := self.recent.lookup_item(get_path_uri(item)):
-                return datetime.fromtimestamp(info.get_modified().to_unix())
+            if (
+                (info := self.recent.lookup_item(get_path_uri(item))) and
+                (iso_string := info.get_modified().format_iso8601())
+            ):
+                return datetime.fromisoformat(iso_string)
 
         return None
 

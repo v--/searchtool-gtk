@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 * Fix option list update inconsistencies.
+* Account for timezone when parsing GTK recent manager's dates.
 
 ## 3.0.0 - 2026-07-10
 
