@@ -1,6 +1,6 @@
 [project]
 name = "searchtool-gtk"
-version = "3.0.0"
+version = "3.0.1"
 description = "A generic GTK search tool and launcher"
 license = "Unlicense"
 license-files = ["LICENSES/Unlicense.txt"]
