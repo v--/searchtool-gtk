@@ -41,6 +41,9 @@ class SearchToolContent[SearchItem: Hashable](Gtk.Box):
         filter_text = widget.get_property('text')
         self.column_view.update_filter_text(filter_text or None)
 
+    def prime_options(self) -> None:
+        self.column_view.prime_options()
+
     def refresh_options(self) -> None:
         self.column_view.refresh_options()
 

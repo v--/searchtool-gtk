@@ -1,4 +1,5 @@
 import pathlib
+from collections.abc import Sequence
 from typing import override
 
 from searchtool_gtk.access_journal import SearchToolAccessJournal
@@ -13,6 +14,10 @@ class PathMode(SearchToolMode[pathlib.Path]):
 
     def __init__(self) -> None:
         self.journal = SearchToolAccessJournal()
+
+    @override
+    def prime_items(self) -> Sequence[pathlib.Path]:
+        return self.fetch_items()
 
     @override
     def get_collator(self) -> PathCollator:

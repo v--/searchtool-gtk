@@ -1,4 +1,4 @@
-from collections.abc import Hashable
+from collections.abc import Hashable, Sequence
 from typing import TYPE_CHECKING, override
 
 from gi.repository import Gio, GLib, GObject, Gtk
@@ -153,9 +153,8 @@ class SearchToolColumnView[SearchItem: Hashable](Gtk.ColumnView):
 
         self.scroll_to_current()
 
-    def refresh_options(self) -> None:
-        new_items = self.mode.fetch_items()
-        to_add = set(new_items)
+    def update_options(self, options: Sequence[SearchItem]) -> None:
+        to_add = set(options)
         removed_count = 0
 
         for i, entry in enumerate(list(self.store)):
@@ -172,6 +171,12 @@ class SearchToolColumnView[SearchItem: Hashable](Gtk.ColumnView):
             self.store.append(SearchToolEntity(item))
 
         self.select_first()
+
+    def prime_options(self) -> None:
+        self.update_options(self.mode.prime_items())
+
+    def refresh_options(self) -> None:
+        self.update_options(self.mode.fetch_items())
 
     def get_selected(self) -> SearchItem | None:
         entity = self.selection.get_selected_item()

@@ -41,7 +41,7 @@ class SearchToolWindow[SearchItem: Hashable](Adw.ApplicationWindow):
         submit_action.connect('activate', self.on_submit)
         self.add_action(submit_action)
 
-        self.content.refresh_options()
+        self.content.prime_options()
 
     def on_select_prev(self, action: Gio.Action, parameter: None) -> None:
         self.content.select_prev()

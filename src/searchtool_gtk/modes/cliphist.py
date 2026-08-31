@@ -1,4 +1,5 @@
 import contextlib
+import subprocess
 from collections.abc import Iterable, Sequence
 from typing import override
 
@@ -12,6 +13,7 @@ from .pipe import PipeMode
 class ClipHistModeConfig(msgspec.Struct, forbid_unknown_fields=True):
     icu_locale: str | None = None
     icu_strength: int = 0
+    prime: bool = True
 
 
 def iter_cliphist_items(strings: Sequence[str]) -> Iterable[ClipHistItem]:
@@ -55,3 +57,16 @@ class ClipHistMode(PipeMode[ClipHistItem]):
     @override
     def get_secondary_item_label(self, item: ClipHistItem) -> str:
         return f'id {item.id}'
+
+    def prime_items(self) -> Sequence[ClipHistItem]:
+        if not self.config.prime:
+            return []
+
+        proc = subprocess.run(
+            ['cliphist', 'list'],
+            stdout=subprocess.PIPE,
+            encoding='utf-8',
+            check=True,
+        )
+
+        return list(iter_cliphist_items(proc.stdout.splitlines()))

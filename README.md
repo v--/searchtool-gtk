@@ -34,6 +34,8 @@ The `dmenu` tool can be used as follows (after configuring a `ClipHistMode` mode
 
     cliphist list | searchtool-gtk-dmenu clipboard | cliphist decode | wl-copy --type text/plain
 
+By default, the ClipHist mode "primes" its cache by prefetching the history. This allows populating the GTK widget in the background so that the first run of the above command is fast.
+
 > [!NOTE]
 > wl-copy tries to detect the MIME type of its input by default, so, without the `--type` option, copying can lead to unexpected behavior.
 

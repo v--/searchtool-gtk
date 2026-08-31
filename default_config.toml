@@ -18,7 +18,7 @@ title = "Books"
 # You can optionally customize the wcmatch flags.
 wcmatch_flags = ["NEGATE", "GLOBSTAR", "BRACE", "GLOBTILDE"]
 
-# ICU collation options for the file mode
+## ICU collation options for the file mode
 # icu_locale =
 # icu_strength =
 
@@ -26,6 +26,9 @@ wcmatch_flags = ["NEGATE", "GLOBSTAR", "BRACE", "GLOBTILDE"]
 [modes.clipboard]
 class = "searchtool_gtk.modes.ClipHistMode"
 
-# ICU collation options for the ClipHist mode
+# Toggle prefetching and caching the history on start
+prime = true
+
+## ICU collation options for the ClipHist mode
 # icu_locale =
 # icu_strength =

@@ -34,4 +34,3 @@ class BinMode(PathMode):
             subprocess.Popen(item.as_posix(), start_new_session=True)
 
         self.journal.log_access(item)
-        print(item, self.journal.get_last_access(item))
