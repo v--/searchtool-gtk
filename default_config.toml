@@ -15,19 +15,20 @@ patterns = [
 # For example, if you can have more than one file mode active, you may want to customize the title
 title = "Books"
 
-# You can optionally customize the wcmatch flags.
+# Customize the wcmatch flags (the following default is used if the option is not specified)
 wcmatch_flags = ["NEGATE", "GLOBSTAR", "BRACE", "GLOBTILDE"]
 
 ## ICU collation options for the file mode
 # icu_locale =
 # icu_strength =
 
-# ClipHistMode is useful for, well, cliphist
-[modes.clipboard]
-class = "searchtool_gtk.modes.ClipHistMode"
+## The ClipHistMode is useful for, well, cliphist. It is disabled by default since cliphist may not be installed.
+# [modes.clipboard]
+## This class aims to replace the legacy dmenu-like ClipHistMode
+# class = "searchtool_gtk.modes.ClipHistStandaloneMode"
 
-# Toggle prefetching and caching the history on start
-prime = true
+## This is the default command for copying (the following default is used if the option is not specified)
+# copy_command = "wl-copy --type text/plain"
 
 ## ICU collation options for the ClipHist mode
 # icu_locale =

@@ -26,10 +26,6 @@ class PipeMode[SearchItem: Hashable](SearchToolMode[SearchItem]):
         return None
 
     @override
-    def prime_items(self) -> Sequence[SearchItem]:
-        return []
-
-    @override
     def fetch_items(self) -> Sequence[SearchItem]:
         return self.items
 

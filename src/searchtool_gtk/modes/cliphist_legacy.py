@@ -1,39 +1,33 @@
-import contextlib
 import subprocess
-from collections.abc import Iterable, Sequence
+from collections.abc import Sequence
 from typing import override
 
 import msgspec
 
 from searchtool_gtk.collation import ClipHistCollator, ClipHistItem, StringCollator
 
-from .base import SearchToolMode
+from .cliphist import iter_cliphist_items
+from .pipe import PipeMode
 
 
 class ClipHistModeConfig(msgspec.Struct, forbid_unknown_fields=True):
     icu_locale: str | None = None
     icu_strength: int = 0
-    copy_command: str = 'wl-copy --type text/plain'
+    prime: bool = False
 
 
-def iter_cliphist_items(strings: Sequence[str]) -> Iterable[ClipHistItem]:
-    for string in strings:
-        try:
-            i, text = string.split('\t', maxsplit=1)
-        except ValueError:
-            pass
-        else:
-            with contextlib.suppress(ValueError):
-                yield ClipHistItem(int(i), text)
-
-
-class ClipHistMode(SearchToolMode[ClipHistItem]):
+class ClipHistLegacyMode(PipeMode[ClipHistItem]):
     __searchtool_config_type__ = ClipHistModeConfig
     config: ClipHistModeConfig
 
+    # We ignore the journal because access should be logger by cliphist
     def __init__(self, config: ClipHistModeConfig) -> None:
         super().__init__()
         self.config = config
+
+    @override
+    def digest_dbus_input(self, items: Sequence[str]) -> None:
+        self.items = list(iter_cliphist_items(items))
 
     @override
     def get_title(self) -> str:
@@ -53,7 +47,10 @@ class ClipHistMode(SearchToolMode[ClipHistItem]):
     def get_secondary_item_label(self, item: ClipHistItem) -> str:
         return f'id {item.id}'
 
-    def fetch_items(self) -> Sequence[ClipHistItem]:
+    def prime_items(self) -> Sequence[ClipHistItem]:
+        if not self.config.prime:
+            return []
+
         proc = subprocess.run(
             ['cliphist', 'list'],
             stdout=subprocess.PIPE,
@@ -62,25 +59,3 @@ class ClipHistMode(SearchToolMode[ClipHistItem]):
         )
 
         return list(iter_cliphist_items(proc.stdout.splitlines()))
-
-    @override
-    def activate_item(self, item: ClipHistItem) -> None:
-        decode_proc = subprocess.run(
-            ['cliphist', 'decode'],
-            input=str(item),
-            stdout=subprocess.PIPE,
-            encoding='utf-8',
-            check=True,
-        )
-
-        subprocess.run(
-            self.config.copy_command,
-            input=decode_proc.stdout,
-            encoding='utf-8',
-            check=True,
-            shell=True,
-        )
-
-    @override
-    def handle_selection_cancellation(self) -> None:
-        pass

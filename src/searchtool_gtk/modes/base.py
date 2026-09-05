@@ -18,9 +18,6 @@ class SearchToolMode[SearchItem: Hashable](Protocol):
     def get_collator(self) -> SearchToolCollator[SearchItem]:
         ...
 
-    def prime_items(self) -> Sequence[SearchItem]:
-        ...
-
     def fetch_items(self) -> Sequence[SearchItem]:
         ...
 

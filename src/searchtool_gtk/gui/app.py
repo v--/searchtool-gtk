@@ -1,9 +1,11 @@
+import warnings
 from collections.abc import Hashable, Mapping, Sequence
 from typing import override
 
 from gi.repository import Adw, Gio, GLib
 
 from searchtool_gtk.config import ModeMapping
+from searchtool_gtk.exceptions import SearchToolDeprecationWarning
 
 from .window import SearchToolWindow
 
@@ -17,10 +19,10 @@ DBUS_INTERFACE = """<node>
 
   <interface name="net.ivasilev.SearchToolGTK">
     <method name="Activate">
-      <arg direction="in" name="name" type="s"/>
+      <arg direction="in" name="mode_name" type="s"/>
     </method>
     <method name="Pick">
-      <arg direction="in" name="name" type="s"/>
+      <arg direction="in" name="mode_name" type="s"/>
       <arg direction="in" name="items" type="as"/>
       <arg direction="out" name="is_selected" type="b"/>
       <arg direction="out" name="item" type="s"/>
@@ -81,6 +83,11 @@ class SearchToolApp(Adw.Application):
                 invocation.return_value()
 
             case 'Pick':
+                warnings.warn(
+                    SearchToolDeprecationWarning('The dbus-like Pick method is deprecated'),
+                    stacklevel=0,
+                )
+
                 items: Sequence[str] = params[1]
 
                 if hasattr(window.mode, 'handle_dbus_input'):

@@ -21,8 +21,7 @@ Each mode is determined by a name and a fully qualified Python class name, so cr
 
 * [`BinMode`](./src/searchtool_gtk/modes/bin.py): Lists all binaries in `PATH`.
 * [`FileMode`](./src/searchtool_gtk/modes/file.py): Accepts a list of glob patterns, lists all the matching files and activates a file via `xdg-open`.
-* [`PipeMode`](./src/searchtool_gtk/modes/pipe.py): Allows manually specifying the options; `searchtool-gtk-dmenu` provides a dmenu-like interface via this mode (see below).
-* [`ClipHistMode`](./src/searchtool_gtk/modes/cliphist.py): A mode specifically adapted for [ClipHist](https://github.com/sentriz/cliphist).
+* [`ClipHistMode`](./src/searchtool_gtk/modes/cliphist.py) (exported as `ClipHistStandaloneMode` until the next major version): A mode specifically adapted for [ClipHist](https://github.com/sentriz/cliphist).
 
 Launching the tool is done by simply running `searchtool-gtk-server`.
 
@@ -30,14 +29,7 @@ Given the [default configuration](./default_config.toml), we can launch the "bin
 
     searchtool-gtk-activate binary
 
-The `dmenu` tool can be used as follows (after configuring a `ClipHistMode` mode named "clipboard"):
-
-    cliphist list | searchtool-gtk-dmenu clipboard | cliphist decode | wl-copy --type text/plain
-
-By default, the ClipHist mode "primes" its cache by prefetching the history. This allows populating the GTK widget in the background so that the first run of the above command is fast.
-
-> [!NOTE]
-> wl-copy tries to detect the MIME type of its input by default, so, without the `--type` option, copying can lead to unexpected behavior.
+The modes (re)populate the GTK widgets in the background so that the each run is as fast as GTK allows it to be.
 
 Once the popup is launched, usage is obvious:
 
@@ -50,7 +42,7 @@ The mode for files (and binaries) uses GTK's recent file history to sort files b
 
 ## Installation
 
-An easy way to install the three executables (`searchtool-gtk-{server,activate,dmenu}`) for the current user is via [`pipx`](https://pipx.pypa.io):
+An easy way to install the two executables (`searchtool-gtk-{server,activate}`) for the current user is via [`pipx`](https://pipx.pypa.io):
 
     pipx install git+https://github.com/v--/searchtool-gtk
 
@@ -60,7 +52,7 @@ An alternative is to use [`uv`](https://docs.astral.sh/uv/):
 
 The hard prerequisites are a supported version of Python and GTK4.
 
-To shave a hundred-or-so milliseconds from every invocation of `searchtool-gtk-{activate,dmenu}`, this project also provides native counterparts. They can be installed to `$dest/bin` via [Meson](https://mesonbuild.com/):
+To shave a hundred-or-so milliseconds from every invocation of `searchtool-gtk-activate`, this project also provides a native counterpart. It can be installed to `$dest/bin` via [Meson](https://mesonbuild.com/):
 
     meson setup builddir --prefix=$dest
     meson install -C builddir
@@ -75,3 +67,6 @@ We use the [XDG config directories](https://specifications.freedesktop.org/based
 ## Motivation
 
 Similar tools often rely on clunky indexing services or have noticeable startup slowdowns. I decided to implement a simple yet efficient solution - an application that is relatively heavyweight when compared to `dmenu`, but instantaneous to start due to it being run as a hidden window. It is more related to the `dmenu` category of tools rather than GNOME or KDE launchers because it is based on plain text items.
+
+> [!NOTE]
+> The current versions still allows a `dmenu`-compatible workflow, but it had some performance problems when used with GTK, so it is currently deprecated.

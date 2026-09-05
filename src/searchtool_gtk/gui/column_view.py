@@ -173,7 +173,10 @@ class SearchToolColumnView[SearchItem: Hashable](Gtk.ColumnView):
         self.select_first()
 
     def prime_options(self) -> None:
-        self.update_options(self.mode.prime_items())
+        if hasattr(self.mode, 'prime_items'):
+            self.update_options(self.mode.prime_items())
+        else:
+            self.update_options(self.mode.fetch_items())
 
     def refresh_options(self) -> None:
         self.update_options(self.mode.fetch_items())
